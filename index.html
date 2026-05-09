@@ -34,11 +34,13 @@
   nav > span { font-size: 12px; color: var(--muted); }
   .tab-group {
     display: flex; align-items: center; gap: 6px;
-    overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
+    flex-wrap: nowrap; overflow-x: auto;
+    scrollbar-width: none; -ms-overflow-style: none;
   }
   .tab-group::-webkit-scrollbar { display: none; }
   @media (max-width: 700px) {
     .tab-group { width: 100%; padding-bottom: 2px; }
+    #today-label { display: none; }
   }
   .tab-btn {
     padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
@@ -398,7 +400,8 @@
 
 <nav>
   <h1>🎯 Goal Tracker</h1>
-  <span id="today-label"></span>
+  <span id="file-status" style="font-size:11px;white-space:nowrap;"></span>
+  <span id="today-label" style="margin-left:auto;"></span>
   <div class="tab-group">
     <button class="tab-btn active" onclick="showTab('checkin')">Check-In</button>
     <button class="tab-btn" onclick="showTab('weekly')">Weekly</button>
@@ -406,7 +409,6 @@
     <button class="tab-btn" onclick="showTab('overview')">Overview</button>
     <button class="tab-btn" onclick="showTab('log')">Log</button>
     <button class="btn-roadmap" onclick="openRoadmap()">📋 Goal Details</button>
-    <span id="file-status" style="font-size:11px;color:var(--muted);white-space:nowrap;"></span>
   </div>
 </nav>
 
