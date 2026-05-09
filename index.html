@@ -951,36 +951,40 @@ async function loadFromGitHub() {
 
 async function saveToGitHub(entries) {
   const token = getGHToken();
-  if (!token) { openTokenModal(); return; }
+  setGHStatus('saving');
   try {
-    if (!ghFileSha) {
-      const r = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
-        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
-      });
-      if (r.ok) ghFileSha = (await r.json()).sha;
-    }
-    const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
+    // Always fetch fresh SHA before writing to avoid conflicts
+    const getRes = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if (!getRes.ok) { setGHStatus('error'); return; }
+    const current = await getRes.json();
+
+    const putRes = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
       method: 'PUT',
       headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message: `checkin: ${getBDDate()}`,
         content: toB64(JSON.stringify(entries, null, 2)),
-        sha: ghFileSha
+        sha: current.sha
       })
     });
-    if (res.ok) {
-      ghFileSha = (await res.json()).content.sha;
+    if (putRes.ok) {
+      ghFileSha = (await putRes.json()).content.sha;
       setGHStatus('synced');
     } else {
+      const err = await putRes.json();
+      console.error('GitHub save error:', err);
       setGHStatus('error');
     }
-  } catch(e) { setGHStatus('error'); console.warn('GitHub save failed:', e); }
+  } catch(e) { setGHStatus('error'); console.error('GitHub save failed:', e); }
 }
 
 function setGHStatus(state) {
   const el = document.getElementById('file-status');
-  if (state === 'synced') { el.textContent = '☁ synced'; el.style.color = 'var(--green)'; }
-  else if (state === 'error') { el.textContent = '⚠ sync failed'; el.style.color = 'var(--red)'; }
+  if (state === 'synced')  { el.textContent = '☁ synced';   el.style.color = 'var(--green)'; }
+  else if (state === 'saving') { el.textContent = '↑ saving…'; el.style.color = 'var(--yellow)'; }
+  else if (state === 'error')  { el.textContent = '⚠ sync failed'; el.style.color = 'var(--red)'; }
   else { el.textContent = ''; }
 }
 
