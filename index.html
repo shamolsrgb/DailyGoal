@@ -901,18 +901,13 @@ let editingEntryId  = null;
 let weekOffset      = 0;
 let monthOffset     = 0;
 
-// ─── DATA STORAGE ─────────────────────────────────────────────
-const STORAGE_KEY = 'goaltracker_checkins_v1';
+// ─── DATA STORAGE (GitHub only — no localStorage) ─────────────
+let DATA = [];
 
-function loadData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch(e) { return []; }
-}
+function loadData() { return DATA; }
 
 async function saveData(entries) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  DATA = entries;
   await saveToGitHub(entries);
 }
 
@@ -929,19 +924,18 @@ function fromB64(str) { return decodeURIComponent(escape(atob(str.replace(/\n/g,
 
 async function loadFromGitHub() {
   try {
+    setGHStatus('saving');
     const token = getGHToken();
     const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
       headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
     });
-    if (!res.ok) return; // offline — keep using localStorage as fallback
+    if (!res.ok) { setGHStatus('error'); return; }
     const data = await res.json();
     ghFileSha = data.sha;
-    // GitHub is single source of truth — overwrite localStorage completely
-    const ghEntries = JSON.parse(fromB64(data.content));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ghEntries));
+    DATA = JSON.parse(fromB64(data.content));
     setGHStatus('synced');
     updateCheckinPage(); renderLog(); renderOverview(); renderWeekly(); renderMonthly();
-  } catch(e) { console.warn('GitHub load failed:', e); }
+  } catch(e) { setGHStatus('error'); console.warn('GitHub load failed:', e); }
 }
 
 async function saveToGitHub(entries) {
