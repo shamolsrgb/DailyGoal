@@ -1,5 +1,21 @@
 [
   {
+    "id": 1778350638408,
+    "date": "2026-05-09",
+    "goals": [
+      {
+        "goalId": 2,
+        "hours": 1
+      }
+    ],
+    "totalHours": 1,
+    "notes": "Build Initial structure, next plan is to check the calculation process is properly working or not. right now main task is to solve calculation errors. Need to add some graph and and information for better visibility",
+    "success": true,
+    "nextAction": "",
+    "mood": 3,
+    "createdAt": "2026-05-09T18:17:18.408Z"
+  },
+  {
     "id": 1778350285853,
     "date": "2026-05-09",
     "goals": [
