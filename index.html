@@ -930,20 +930,15 @@ function fromB64(str) { return decodeURIComponent(escape(atob(str.replace(/\n/g,
 async function loadFromGitHub() {
   try {
     const token = getGHToken();
-    const headers = { 'Accept': 'application/vnd.github+json' };
-    if (token) headers['Authorization'] = `token ${token}`;
-    const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, { headers });
-    if (!res.ok) return;
+    const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if (!res.ok) return; // offline — keep using localStorage as fallback
     const data = await res.json();
     ghFileSha = data.sha;
+    // GitHub is single source of truth — overwrite localStorage completely
     const ghEntries = JSON.parse(fromB64(data.content));
-    // Merge: GitHub is source of truth; add any local-only entries on top
-    const lsEntries = loadData();
-    const map = new Map();
-    ghEntries.forEach(e => map.set(e.id, e));
-    lsEntries.forEach(e => { if (!map.has(e.id)) map.set(e.id, e); });
-    const merged = [...map.values()].sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ghEntries));
     setGHStatus('synced');
     updateCheckinPage(); renderLog(); renderOverview(); renderWeekly(); renderMonthly();
   } catch(e) { console.warn('GitHub load failed:', e); }
