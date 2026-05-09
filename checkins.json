@@ -1,5 +1,21 @@
 [
   {
+    "id": 1778348348809,
+    "date": "2026-05-09",
+    "goals": [
+      {
+        "goalId": 1,
+        "hours": 1
+      }
+    ],
+    "totalHours": 1,
+    "notes": "",
+    "success": false,
+    "nextAction": "",
+    "mood": 5,
+    "createdAt": "2026-05-09T17:39:08.809Z"
+  },
+  {
     "id": 1778347859019,
     "date": "2026-05-09",
     "goals": [
