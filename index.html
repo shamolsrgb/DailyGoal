@@ -199,6 +199,13 @@
   /* SCROLLABLE */
   .scroll-x { overflow-x: auto; }
 
+  /* TOKEN MODAL */
+  #token-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75);
+    z-index: 500; align-items: center; justify-content: center; padding: 16px;
+  }
+  #token-overlay.open { display: flex; }
+
   /* LOCK SCREEN */
   #lock-screen {
     position: fixed; inset: 0; background: var(--bg);
@@ -367,6 +374,22 @@
 </style>
 </head>
 <body>
+
+<!-- TOKEN MODAL -->
+<div id="token-overlay">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <h2>☁ GitHub Sync Setup</h2>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Enter a GitHub Personal Access Token with <strong style="color:var(--text)">Contents: Read & Write</strong> permission so check-ins save directly to your repo.</p>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Create one at <strong style="color:var(--accent)">github.com/settings/tokens → Fine-grained tokens</strong> → select the DailyGoal repo → Contents: Read & Write.</p>
+    <div class="form-row">
+      <label>GitHub Token</label>
+      <input type="password" id="token-input" placeholder="github_pat_..." onkeydown="if(event.key==='Enter') saveToken()">
+    </div>
+    <button class="btn-primary" onclick="saveToken()">Save & Sync</button>
+  </div>
+</div>
 
 <!-- LOCK SCREEN -->
 <div id="lock-screen">
@@ -906,95 +929,92 @@ function loadData() {
 
 async function saveData(entries) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-  if (!fsHandle) await pickFileOnce();
-  if (fsHandle) writeToFile(fsHandle, entries).catch(console.error);
+  await saveToGitHub(entries);
 }
 
-// ─── FILE SYSTEM ACCESS ───────────────────────────────────────
-let fsHandle = null;
-const IDB_DB = 'goaltracker_fs', IDB_STORE = 'handles';
+// ─── GITHUB STORAGE ───────────────────────────────────────────
+const GH_REPO     = 'shamolsrgb/DailyGoal';
+const GH_FILE     = 'checkins.json';
+const GH_TOKEN_KEY = 'goaltracker_gh_token';
+let ghFileSha = null;
 
-function openIDB() {
-  return new Promise((res, rej) => {
-    const r = indexedDB.open(IDB_DB, 1);
-    r.onupgradeneeded = e => e.target.result.createObjectStore(IDB_STORE);
-    r.onsuccess = e => res(e.target.result);
-    r.onerror = () => rej(r.error);
-  });
-}
+function getGHToken() { return localStorage.getItem(GH_TOKEN_KEY); }
 
-async function storeHandle(h) {
-  const db = await openIDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction(IDB_STORE, 'readwrite');
-    tx.objectStore(IDB_STORE).put(h, 'dataFile');
-    tx.oncomplete = res; tx.onerror = () => rej(tx.error);
-  });
-}
+function toB64(str) { return btoa(unescape(encodeURIComponent(str))); }
+function fromB64(str) { return decodeURIComponent(escape(atob(str.replace(/\n/g,'')))); }
 
-async function retrieveHandle() {
-  const db = await openIDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction(IDB_STORE, 'readonly');
-    const r = tx.objectStore(IDB_STORE).get('dataFile');
-    r.onsuccess = () => res(r.result || null);
-    r.onerror = () => rej(r.error);
-  });
-}
-
-async function writeToFile(handle, entries) {
-  const w = await handle.createWritable();
-  await w.write(JSON.stringify(entries, null, 2));
-  await w.close();
-}
-
-async function readFromFile(handle) {
-  const file = await handle.getFile();
-  const text = await file.text();
-  return text.trim() ? JSON.parse(text) : [];
-}
-
-function setFileStatus(linked) {
-  const el = document.getElementById('file-status');
-  el.textContent = linked ? '💾 auto-saving to file' : '';
-  el.style.color = linked ? 'var(--green)' : 'var(--muted)';
-}
-
-async function pickFileOnce() {
-  if (!window.showSaveFilePicker) return;
+async function loadFromGitHub() {
   try {
-    const handle = await window.showSaveFilePicker({
-      suggestedName: 'checkins.json',
-      types: [{ description: 'JSON Data', accept: { 'application/json': ['.json'] } }],
-    });
-    fsHandle = handle;
-    await storeHandle(handle);
-    setFileStatus(true);
-  } catch(e) {
-    if (e.name !== 'AbortError') console.error(e);
-  }
+    const token = getGHToken();
+    const headers = { 'Accept': 'application/vnd.github+json' };
+    if (token) headers['Authorization'] = `token ${token}`;
+    const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, { headers });
+    if (!res.ok) return;
+    const data = await res.json();
+    ghFileSha = data.sha;
+    const ghEntries = JSON.parse(fromB64(data.content));
+    // Merge: GitHub is source of truth; add any local-only entries on top
+    const lsEntries = loadData();
+    const map = new Map();
+    ghEntries.forEach(e => map.set(e.id, e));
+    lsEntries.forEach(e => { if (!map.has(e.id)) map.set(e.id, e); });
+    const merged = [...map.values()].sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    setGHStatus('synced');
+    updateCheckinPage(); renderLog(); renderOverview(); renderWeekly(); renderMonthly();
+  } catch(e) { console.warn('GitHub load failed:', e); }
 }
 
-async function initFileStorage() {
-  if (!window.showSaveFilePicker) return;
+async function saveToGitHub(entries) {
+  const token = getGHToken();
+  if (!token) { openTokenModal(); return; }
   try {
-    const handle = await retrieveHandle();
-    if (!handle) return;
-    const perm = await handle.queryPermission({ mode: 'readwrite' });
-    if (perm === 'granted') {
-      fsHandle = handle;
-      // Merge file data into localStorage
-      const fileEntries = await readFromFile(handle);
-      const lsEntries = loadData();
-      const map = new Map();
-      lsEntries.forEach(e => map.set(e.date, e));
-      fileEntries.forEach(e => map.set(e.date, e));
-      const merged = [...map.values()].sort((a,b) => b.date.localeCompare(a.date));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      setFileStatus(true);
-      updateCheckinPage(); renderLog(); renderOverview(); renderWeekly(); renderMonthly();
+    if (!ghFileSha) {
+      const r = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
+        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
+      });
+      if (r.ok) ghFileSha = (await r.json()).sha;
     }
-  } catch(e) { console.warn('File storage init:', e); }
+    const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `checkin: ${getBDDate()}`,
+        content: toB64(JSON.stringify(entries, null, 2)),
+        sha: ghFileSha
+      })
+    });
+    if (res.ok) {
+      ghFileSha = (await res.json()).content.sha;
+      setGHStatus('synced');
+    } else {
+      setGHStatus('error');
+    }
+  } catch(e) { setGHStatus('error'); console.warn('GitHub save failed:', e); }
+}
+
+function setGHStatus(state) {
+  const el = document.getElementById('file-status');
+  if (state === 'synced') { el.textContent = '☁ synced'; el.style.color = 'var(--green)'; }
+  else if (state === 'error') { el.textContent = '⚠ sync failed'; el.style.color = 'var(--red)'; }
+  else { el.textContent = ''; }
+}
+
+function openTokenModal() {
+  document.getElementById('token-overlay').classList.add('open');
+}
+
+function saveToken() {
+  const val = document.getElementById('token-input').value.trim();
+  if (!val) return;
+  localStorage.setItem(GH_TOKEN_KEY, val);
+  document.getElementById('token-overlay').classList.remove('open');
+  loadFromGitHub();
+}
+
+async function initGitHubStorage() {
+  await loadFromGitHub();
+  if (!getGHToken()) openTokenModal();
 }
 
 // ─── BANGLADESH DATE ──────────────────────────────────────────
@@ -1025,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderOverview();
   renderWeekly();
   renderMonthly();
-  initFileStorage();
+  initGitHubStorage();
 });
 
 // ─── GOAL SELECTOR ────────────────────────────────────────────
