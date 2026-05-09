@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Check-In · Goal Roadmap</title>
+<style>
+  :root {
+    --bg: #0e0f14;
+    --surface: #16181f;
+    --surface2: #1e2029;
+    --border: #2a2d3a;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --green: #43d98c;
+    --yellow: #ffc84a;
+    --red: #ff5c7a;
+    --text: #e8eaf0;
+    --muted: #7b7f96;
+    --font: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 24px; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  nav h1 { font-size: 15px; font-weight: 700; letter-spacing: -.3px; margin-right: auto; }
+  nav span { font-size: 12px; color: var(--muted); }
+  .tab-btn {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--muted); font-size: 12px; cursor: pointer;
+    transition: all .15s;
+  }
+  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tab-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+  /* LAYOUT */
+  .page { display: none; padding: 24px; max-width: 900px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 16px;
+  }
+  .card h2 { font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px; }
+  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+
+  /* FORM */
+  .form-row { margin-bottom: 16px; }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+  input[type=text], input[type=number], input[type=date], textarea, select {
+    width: 100%; padding: 10px 12px; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-size: 14px; outline: none;
+    transition: border-color .15s;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  textarea { min-height: 80px; resize: vertical; font-family: var(--font); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7);
+    z-index: 100; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto;
+    padding: 24px; position: relative;
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .modal-header h2 { font-size: 16px; font-weight: 700; color: var(--text); }
+  .modal-header .modal-date { font-size: 12px; color: var(--accent); font-weight: 600; background: rgba(108,99,255,.15); padding: 4px 10px; border-radius: 20px; }
+  .modal-close {
+    width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--muted); cursor: pointer;
+    font-size: 14px; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* GOAL SELECTOR */
+  .goal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px; }
+  .goal-chip {
+    padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border);
+    cursor: pointer; font-size: 12px; transition: all .15s; background: var(--surface2);
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .goal-chip input[type=checkbox] { margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
+  .goal-chip:hover { border-color: var(--accent); }
+  .goal-chip.selected { border-color: var(--accent); background: rgba(108,99,255,.12); }
+  .goal-chip .goal-name { font-size: 12px; font-weight: 600; line-height: 1.4; color: var(--text); }
+  .goal-chip .goal-meta { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* HOURS INPUTS for selected goals */
+  #hours-inputs .hour-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; background: var(--surface2); border-radius: 8px;
+    border: 1px solid var(--border); margin-bottom: 8px;
+  }
+  #hours-inputs .hour-row label { margin: 0; flex: 1; font-size: 12px; color: var(--text); }
+  #hours-inputs .hour-row input { width: 80px; flex-shrink: 0; }
+
+  /* MOOD */
+  .mood-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .mood-btn {
+    flex: 1; min-width: 60px; padding: 10px 6px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface2);
+    cursor: pointer; text-align: center; font-size: 20px; transition: all .15s;
+  }
+  .mood-btn span { display: block; font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .mood-btn.selected { border-color: var(--accent); background: rgba(108,99,255,.15); }
+
+  /* SUCCESS */
+  .success-row { display: flex; gap: 8px; }
+  .success-btn {
+    flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface2); cursor: pointer; text-align: center;
+    font-size: 13px; font-weight: 600; transition: all .15s;
+  }
+  .success-btn.yes { color: var(--green); }
+  .success-btn.no { color: var(--red); }
+  .success-btn.yes.selected { background: rgba(67,217,140,.15); border-color: var(--green); }
+  .success-btn.no.selected { background: rgba(255,92,122,.15); border-color: var(--red); }
+
+  /* SUBMIT */
+  .btn-primary {
+    width: 100%; padding: 13px; background: var(--accent); color: #fff;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: opacity .15s;
+  }
+  .btn-primary:hover { opacity: .85; }
+  .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--green); color: #000; padding: 10px 24px;
+    border-radius: 30px; font-size: 13px; font-weight: 600;
+    opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 999;
+  }
+  #toast.show { opacity: 1; }
+
+  /* STATS GRID */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .stat-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .stat-box .val { font-size: 26px; font-weight: 800; line-height: 1; }
+  .stat-box .lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* PROGRESS BAR */
+  .prog-row { margin-bottom: 12px; }
+  .prog-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+  .prog-header .goal-title { color: var(--text); font-weight: 500; }
+  .prog-header .goal-pct { color: var(--muted); }
+  .prog-bar { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 4px; transition: width .4s; }
+
+  /* PHASE COLORS */
+  .ph1 { background: #6c63ff; }
+  .ph2 { background: #43d98c; }
+  .ph3 { background: #ffc84a; }
+  .ph4 { background: #ff6584; }
+  .ph-badge {
+    display: inline-block; padding: 2px 7px; border-radius: 10px;
+    font-size: 10px; font-weight: 700; margin-left: 6px;
+  }
+  .ph1-bg { background: rgba(108,99,255,.2); color: #6c63ff; }
+  .ph2-bg { background: rgba(67,217,140,.2); color: #43d98c; }
+  .ph3-bg { background: rgba(255,200,74,.2); color: #ffc84a; }
+  .ph4-bg { background: rgba(255,101,132,.2); color: #ff6584; }
+
+  /* LOG TABLE */
+  .log-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .log-table th { color: var(--muted); text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); font-weight: 500; }
+  .log-table td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .log-table tr:last-child td { border-bottom: none; }
+  .success-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-yes { background: var(--green); }
+  .dot-no { background: var(--red); }
+
+  /* WEEK SELECTOR */
+  .period-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .period-nav button {
+    padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--text); cursor: pointer; font-size: 12px;
+  }
+  .period-nav span { flex: 1; text-align: center; font-size: 13px; font-weight: 600; }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+
+  /* SCROLLABLE */
+  .scroll-x { overflow-x: auto; }
+
+  /* GOAL DETAILS MODAL */
+  #roadmap-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.8);
+    z-index: 200; align-items: flex-start; justify-content: center;
+    padding: 20px 16px; overflow-y: auto;
+  }
+  #roadmap-overlay.open { display: flex; }
+  #roadmap-modal {
+    background: #0d0f14; border: 1px solid #1e2230;
+    border-radius: 18px; width: 100%; max-width: 1060px;
+    padding: 32px; position: relative; margin: auto;
+    font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
+  }
+  #roadmap-modal .rm-close {
+    position: absolute; top: 18px; right: 18px;
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid #2a2d3a; background: #1e2029;
+    color: #7b7f96; cursor: pointer; font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #roadmap-modal .rm-header { margin-bottom: 28px; }
+  #roadmap-modal .rm-header h2 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 1.9rem; color: #e8eaf0; line-height: 1.1; margin-bottom: 6px;
+  }
+  #roadmap-modal .rm-header h2 em { color: #f0a500; font-style: italic; }
+  #roadmap-modal .rm-header p { color: #6b7080; font-size: 0.8rem; letter-spacing: .04em; font-family: monospace; }
+
+  #roadmap-modal .rm-phases {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 28px;
+  }
+  #roadmap-modal .rm-phase-pill {
+    background: #13161e; border: 1px solid #1e2230; border-radius: 10px;
+    padding: 14px 16px; position: relative; overflow: hidden;
+  }
+  #roadmap-modal .rm-phase-pill::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  #roadmap-modal .rm-phase-pill[data-p="1"]::before { background: #f0a500; }
+  #roadmap-modal .rm-phase-pill[data-p="2"]::before { background: #4e9eff; }
+  #roadmap-modal .rm-phase-pill[data-p="3"]::before { background: #7c5cfc; }
+  #roadmap-modal .rm-phase-pill[data-p="4"]::before { background: #2dd4a0; }
+  #roadmap-modal .rm-phase-pill .rp-lbl { font-size: .62rem; color: #6b7080; font-family: monospace; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 3px; }
+  #roadmap-modal .rm-phase-pill .rp-name { font-size: .88rem; font-weight: 600; }
+  #roadmap-modal .rm-phase-pill[data-p="1"] .rp-name { color: #f0a500; }
+  #roadmap-modal .rm-phase-pill[data-p="2"] .rp-name { color: #4e9eff; }
+  #roadmap-modal .rm-phase-pill[data-p="3"] .rp-name { color: #7c5cfc; }
+  #roadmap-modal .rm-phase-pill[data-p="4"] .rp-name { color: #2dd4a0; }
+  #roadmap-modal .rm-phase-pill .rp-dur { font-size: .7rem; color: #6b7080; font-family: monospace; margin-top: 3px; }
+
+  #roadmap-modal .rm-content { display: grid; grid-template-columns: 1fr 270px; gap: 20px; align-items: start; }
+  #roadmap-modal .rm-goals { display: flex; flex-direction: column; gap: 8px; }
+
+  #roadmap-modal .rm-section-label {
+    font-family: monospace; font-size: .62rem; text-transform: uppercase; letter-spacing: .1em;
+    padding: 5px 10px; border-radius: 6px; display: inline-flex; align-items: center;
+    gap: 7px; margin-top: 6px; margin-bottom: 2px;
+  }
+  #roadmap-modal .rm-section-label::before { content: ''; width: 7px; height: 7px; border-radius: 50%; }
+  #roadmap-modal .rm-section-label.p1 { color: #f0a500; background: rgba(240,165,0,.08); }
+  #roadmap-modal .rm-section-label.p1::before { background: #f0a500; }
+  #roadmap-modal .rm-section-label.p2 { color: #4e9eff; background: rgba(78,158,255,.08); }
+  #roadmap-modal .rm-section-label.p2::before { background: #4e9eff; }
+  #roadmap-modal .rm-section-label.p3 { color: #7c5cfc; background: rgba(124,92,252,.08); }
+  #roadmap-modal .rm-section-label.p3::before { background: #7c5cfc; }
+  #roadmap-modal .rm-section-label.p4 { color: #2dd4a0; background: rgba(45,212,160,.08); }
+  #roadmap-modal .rm-section-label.p4::before { background: #2dd4a0; }
+
+  #roadmap-modal .rm-goal-card {
+    background: #13161e; border: 1px solid #1e2230;
+    border-left: 3px solid transparent; border-radius: 10px;
+    padding: 12px 16px; display: grid; grid-template-columns: 26px 1fr;
+    gap: 10px; align-items: center;
+  }
+  #roadmap-modal .rm-goal-card.p1 { border-left-color: #f0a500; }
+  #roadmap-modal .rm-goal-card.p2 { border-left-color: #4e9eff; }
+  #roadmap-modal .rm-goal-card.p3 { border-left-color: #7c5cfc; }
+  #roadmap-modal .rm-goal-card.p4 { border-left-color: #2dd4a0; }
+  #roadmap-modal .rm-goal-card .rg-num { font-family: monospace; font-size: .65rem; color: #6b7080; text-align: center; }
+  #roadmap-modal .rm-goal-card .rg-title { font-size: .88rem; font-weight: 500; color: #e8eaf0; margin-bottom: 5px; }
+  #roadmap-modal .rm-goal-card .rg-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  #roadmap-modal .rm-goal-card .rg-tag {
+    font-size: .6rem; font-family: monospace; padding: 2px 7px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: .04em; white-space: nowrap;
+  }
+  #roadmap-modal .rg-tag.timing { background: rgba(255,255,255,.05); color: #6b7080; }
+  #roadmap-modal .rg-tag.income { background: rgba(45,212,160,.1); color: #2dd4a0; }
+  #roadmap-modal .rg-tag.running { background: rgba(78,158,255,.1); color: #4e9eff; }
+  #roadmap-modal .rg-tag.foundation { background: rgba(240,165,0,.1); color: #f0a500; }
+  #roadmap-modal .rg-tag.hrs { color: #6b7080; }
+
+  #roadmap-modal .rm-sidebar { display: flex; flex-direction: column; gap: 14px; }
+  #roadmap-modal .rm-sb-card { background: #13161e; border: 1px solid #1e2230; border-radius: 12px; padding: 16px 18px; }
+  #roadmap-modal .rm-sb-card h3 { font-family: monospace; font-size: .6rem; text-transform: uppercase; letter-spacing: .08em; color: #6b7080; margin-bottom: 12px; }
+
+  #roadmap-modal .rm-rhythm { display: flex; flex-direction: column; gap: 6px; }
+  #roadmap-modal .rm-rhythm-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 9px; background: rgba(255,255,255,.03); border-radius: 7px;
+  }
+  #roadmap-modal .rm-rhythm-item .r-day { font-size: .74rem; font-weight: 500; color: #e8eaf0; }
+  #roadmap-modal .rm-rhythm-item .r-task { font-size: .68rem; color: #6b7080; text-align: right; }
+
+  #roadmap-modal .rm-rules { display: flex; flex-direction: column; gap: 9px; }
+  #roadmap-modal .rm-rule { display: flex; gap: 9px; align-items: flex-start; }
+  #roadmap-modal .rm-rule .ri { font-size: .9rem; flex-shrink: 0; margin-top: 1px; }
+  #roadmap-modal .rm-rule .rt { font-size: .72rem; color: #6b7080; line-height: 1.5; }
+  #roadmap-modal .rm-rule .rt strong { color: #e8eaf0; }
+
+  #roadmap-modal .rm-footer {
+    margin-top: 24px; padding-top: 20px; border-top: 1px solid #1e2230;
+    display: flex; gap: 0; flex-wrap: wrap;
+  }
+  #roadmap-modal .rm-stat {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 0 24px 0 0; margin: 0 24px 0 0; border-right: 1px solid #1e2230;
+  }
+  #roadmap-modal .rm-stat:last-child { border-right: none; }
+  #roadmap-modal .rm-stat .sv { font-family: 'DM Serif Display', Georgia, serif; font-size: 1.6rem; color: #e8eaf0; line-height: 1; }
+  #roadmap-modal .rm-stat .sv span { color: #f0a500; }
+  #roadmap-modal .rm-stat .sl { font-size: .65rem; color: #6b7080; font-family: monospace; text-transform: uppercase; letter-spacing: .05em; }
+
+  .btn-roadmap {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid #f0a500;
+    background: rgba(240,165,0,.1); color: #f0a500; font-size: 12px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .btn-roadmap:hover { background: rgba(240,165,0,.2); }
+
+  @media (max-width: 700px) {
+    #roadmap-modal .rm-content { grid-template-columns: 1fr; }
+    #roadmap-modal .rm-phases { grid-template-columns: repeat(2,1fr); }
+    #roadmap-modal { padding: 20px 16px; }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 12px 16px; }
+    .page { padding: 16px; }
+    .goal-grid { grid-template-columns: 1fr 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <h1>🎯 Goal Tracker</h1>
+  <span id="today-label"></span>
+  <button class="tab-btn active" onclick="showTab('checkin')">Check-In</button>
+  <button class="tab-btn" onclick="showTab('weekly')">Weekly</button>
+  <button class="tab-btn" onclick="showTab('monthly')">Monthly</button>
+  <button class="tab-btn" onclick="showTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="showTab('log')">Log</button>
+  <button class="btn-roadmap" onclick="openRoadmap()">📋 Goal Details</button>
+  <span id="file-status" style="font-size:11px;color:var(--muted);"></span>
+</nav>
+
+<!-- ======================== CHECK-IN PAGE ======================== -->
+<div class="page active" id="page-checkin">
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:12px;">🎯</div>
+    <h3 id="checkin-page-date" style="font-size:18px;font-weight:700;margin-bottom:6px;"></h3>
+    <p id="checkin-page-status" style="font-size:13px;color:var(--muted);margin-bottom:24px;"></p>
+    <button class="btn-primary" onclick="openModal()" style="max-width:260px;margin:0 auto;">
+      + Start Today's Check-In
+    </button>
+  </div>
+
+  <div class="card" id="today-summary" style="display:none">
+    <h2>Today's Entries</h2>
+    <div id="today-summary-content"></div>
+  </div>
+</div>
+
+<!-- ======================== MODAL ======================== -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Daily Check-In</h2>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="modal-date" id="modal-date-label"></span>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Which goals did you work on? <span style="color:var(--muted)">(select all that apply)</span></label>
+      <div class="goal-grid" id="goal-selector"></div>
+    </div>
+
+    <div class="form-row" id="hours-section" style="display:none">
+      <label>Hours spent per goal</label>
+      <div id="hours-inputs"></div>
+    </div>
+
+    <div class="form-row">
+      <label>What did you accomplish today?</label>
+      <textarea id="ci-notes" placeholder="Describe what you did today..."></textarea>
+    </div>
+
+    <div class="form-row">
+      <label>Was today successful?</label>
+      <div class="success-row">
+        <button class="success-btn yes" onclick="setSuccess(true)">✅ Yes, productive day</button>
+        <button class="success-btn no" onclick="setSuccess(false)">❌ Not quite</button>
+      </div>
+    </div>
+
+    <div class="form-row" id="next-action-section" style="display:none">
+      <label>What should you do differently tomorrow?</label>
+      <textarea id="ci-next-action" placeholder="What will you do next time to improve?"></textarea>
+    </div>
+
+    <div class="form-row">
+      <label>Energy / Focus Level</label>
+      <div class="mood-row">
+        <button class="mood-btn" onclick="setMood(1)">😴<span>Drained</span></button>
+        <button class="mood-btn" onclick="setMood(2)">😐<span>Low</span></button>
+        <button class="mood-btn" onclick="setMood(3)">🙂<span>Okay</span></button>
+        <button class="mood-btn" onclick="setMood(4)">😊<span>Good</span></button>
+        <button class="mood-btn" onclick="setMood(5)">🔥<span>On Fire</span></button>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="submitCheckIn()">Save Check-In</button>
+  </div>
+</div>
+
+<!-- ======================== WEEKLY ======================== -->
+<div class="page" id="page-weekly">
+  <div class="period-nav">
+    <button onclick="changeWeek(-1)">← Prev</button>
+    <span id="week-label"></span>
+    <button onclick="changeWeek(1)">Next →</button>
+  </div>
+
+  <div class="stats-grid" id="weekly-stats"></div>
+
+  <div class="card">
+    <h2>Hours by Goal</h2>
+    <div id="weekly-goals"></div>
+  </div>
+
+  <div class="card">
+    <h2>Daily Breakdown</h2>
+    <div id="weekly-daily"></div>
+  </div>
+</div>
+
+<!-- ======================== MONTHLY ======================== -->
+<div class="page" id="page-monthly">
+  <div class="period-nav">
+    <button onclick="changeMonth(-1)">← Prev</button>
+    <span id="month-label"></span>
+    <button onclick="changeMonth(1)">Next →</button>
+  </div>
+
+  <div class="stats-grid" id="monthly-stats"></div>
+
+  <div class="card">
+    <h2>Goal Progress This Month</h2>
+    <div id="monthly-goals"></div>
+  </div>
+
+  <div class="card">
+    <h2>Week by Week</h2>
+    <div id="monthly-weeks"></div>
+  </div>
+</div>
+
+<!-- ======================== OVERVIEW ======================== -->
+<div class="page" id="page-overview">
+  <div class="stats-grid" id="overview-stats"></div>
+
+  <div class="card">
+    <h2>Phase Progress</h2>
+    <div id="phase-progress"></div>
+  </div>
+
+  <div class="card">
+    <h2>Goal Completion (All Time Hours)</h2>
+    <div id="goal-completion"></div>
+  </div>
+
+  <div class="card">
+    <h2>Streaks & Habits</h2>
+    <div id="streaks"></div>
+  </div>
+</div>
+
+<!-- ======================== LOG ======================== -->
+<div class="page" id="page-log">
+  <div class="card">
+    <h2>All Check-Ins</h2>
+    <div class="scroll-x">
+      <table class="log-table" id="log-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Goals</th>
+            <th>Hours</th>
+            <th>Mood</th>
+            <th>Success</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="log-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="toast">✓ Check-in saved!</div>
+
+<!-- ======================== ROADMAP MODAL ======================== -->
+<div id="roadmap-overlay" onclick="handleRoadmapOverlay(event)">
+  <div id="roadmap-modal">
+    <button class="rm-close" onclick="closeRoadmap()">✕</button>
+
+    <div class="rm-header">
+      <h2>Your <em>18-Month</em> Goal Roadmap</h2>
+      <p>// 14 goals · 3–4 hrs/day · sequenced for max leverage</p>
+    </div>
+
+    <div class="rm-phases">
+      <div class="rm-phase-pill" data-p="1">
+        <div class="rp-lbl">Phase 1</div>
+        <div class="rp-name">Foundation</div>
+        <div class="rp-dur">Month 1 – 4</div>
+      </div>
+      <div class="rm-phase-pill" data-p="2">
+        <div class="rp-lbl">Phase 2</div>
+        <div class="rp-name">Build & Ship</div>
+        <div class="rp-dur">Month 5 – 9</div>
+      </div>
+      <div class="rm-phase-pill" data-p="3">
+        <div class="rp-lbl">Phase 3</div>
+        <div class="rp-name">Level Up</div>
+        <div class="rp-dur">Month 10 – 15</div>
+      </div>
+      <div class="rm-phase-pill" data-p="4">
+        <div class="rp-lbl">Phase 4</div>
+        <div class="rp-name">Elite Tier</div>
+        <div class="rp-dur">Month 16 – 24</div>
+      </div>
+    </div>
+
+    <div class="rm-content">
+      <div class="rm-goals">
+
+        <div class="rm-section-label p1">Phase 1 — Foundation · Month 1-4</div>
+
+        <div class="rm-goal-card p1">
+          <div class="rg-num">01</div>
+          <div>
+            <div class="rg-title">Financial Tracking Project</div>
+            <div class="rg-tags">
+              <span class="rg-tag running">Already Running</span>
+              <span class="rg-tag timing">Mo 1-3</span>
+              <span class="rg-tag hrs">~3h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p1">
+          <div class="rg-num">02</div>
+          <div>
+            <div class="rg-title">Tax Calculator Project</div>
+            <div class="rg-tags">
+              <span class="rg-tag running">Already Running</span>
+              <span class="rg-tag timing">Mo 1-3</span>
+              <span class="rg-tag hrs">~3h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p1">
+          <div class="rg-num">03</div>
+          <div>
+            <div class="rg-title">AI Vibe Coding — Learn Properly</div>
+            <div class="rg-tags">
+              <span class="rg-tag foundation">Foundation Skill</span>
+              <span class="rg-tag timing">Mo 1-4</span>
+              <span class="rg-tag hrs">~4h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p1">
+          <div class="rg-num">04</div>
+          <div>
+            <div class="rg-title">Self Evaluation Work</div>
+            <div class="rg-tags">
+              <span class="rg-tag timing">Mo 1-2</span>
+              <span class="rg-tag hrs">1 weekend session</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-section-label p2">Phase 2 — Build & Ship · Month 5-9</div>
+
+        <div class="rm-goal-card p2">
+          <div class="rg-num">05</div>
+          <div>
+            <div class="rg-title">Portfolio Website — Build & Launch</div>
+            <div class="rg-tags">
+              <span class="rg-tag income">Income Driver</span>
+              <span class="rg-tag timing">Mo 5-7</span>
+              <span class="rg-tag hrs">~5h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p2">
+          <div class="rg-num">06</div>
+          <div>
+            <div class="rg-title">Case Study Writing (3 core studies)</div>
+            <div class="rg-tags">
+              <span class="rg-tag income">Income Driver</span>
+              <span class="rg-tag timing">Mo 6-8</span>
+              <span class="rg-tag hrs">~3h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p2">
+          <div class="rg-num">07</div>
+          <div>
+            <div class="rg-title">Wife's Upwork Profile — AI-Assisted</div>
+            <div class="rg-tags">
+              <span class="rg-tag income">Income Driver</span>
+              <span class="rg-tag timing">Mo 5-8</span>
+              <span class="rg-tag hrs">~2h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p2">
+          <div class="rg-num">08</div>
+          <div>
+            <div class="rg-title">Personal Automated Journal Tracking</div>
+            <div class="rg-tags">
+              <span class="rg-tag timing">Mo 7-9</span>
+              <span class="rg-tag hrs">~2h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-section-label p3">Phase 3 — Level Up · Month 10-15</div>
+
+        <div class="rm-goal-card p3">
+          <div class="rg-num">09</div>
+          <div>
+            <div class="rg-title">Language Learning — IELTS (Primary)</div>
+            <div class="rg-tags">
+              <span class="rg-tag timing">Mo 10-15</span>
+              <span class="rg-tag hrs">30 min/day · daily habit</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p3">
+          <div class="rg-num">10</div>
+          <div>
+            <div class="rg-title">Spine Integration — Website / Framer</div>
+            <div class="rg-tags">
+              <span class="rg-tag timing">Mo 10-12</span>
+              <span class="rg-tag hrs">~4h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p3">
+          <div class="rg-num">11</div>
+          <div>
+            <div class="rg-title">Advanced UI Animation Workflow</div>
+            <div class="rg-tags">
+              <span class="rg-tag timing">Mo 11-14</span>
+              <span class="rg-tag hrs">~4h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p3">
+          <div class="rg-num">12</div>
+          <div>
+            <div class="rg-title">Toptal Onboarding — Apply & Prep</div>
+            <div class="rg-tags">
+              <span class="rg-tag income">Income Driver</span>
+              <span class="rg-tag timing">Mo 13-15</span>
+              <span class="rg-tag hrs">Prep + Apply</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-section-label p4">Phase 4 — Elite Tier · Month 16-24</div>
+
+        <div class="rm-goal-card p4">
+          <div class="rg-num">13</div>
+          <div>
+            <div class="rg-title">3D Presentation / After Effects Reel</div>
+            <div class="rg-tags">
+              <span class="rg-tag timing">Mo 16-20</span>
+              <span class="rg-tag hrs">~5h/wk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-goal-card p4">
+          <div class="rg-num">14</div>
+          <div>
+            <div class="rg-title">Blender / C4D Assets Building</div>
+            <div class="rg-tags">
+              <span class="rg-tag timing">Mo 18-24</span>
+              <span class="rg-tag hrs">~4h/wk</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /rm-goals -->
+
+      <div class="rm-sidebar">
+
+        <div class="rm-sb-card">
+          <h3>// Weekly Rhythm</h3>
+          <div class="rm-rhythm">
+            <div class="rm-rhythm-item"><div class="r-day">Mon – Tue</div><div class="r-task">Current phase projects</div></div>
+            <div class="rm-rhythm-item"><div class="r-day">Wednesday</div><div class="r-task">Skill building / learning</div></div>
+            <div class="rm-rhythm-item"><div class="r-day">Thu – Fri</div><div class="r-task">Income goal work</div></div>
+            <div class="rm-rhythm-item"><div class="r-day">Saturday</div><div class="r-task">Deep work (2-3 hrs)</div></div>
+            <div class="rm-rhythm-item"><div class="r-day">Sunday</div><div class="r-task">Rest or light review</div></div>
+            <div class="rm-rhythm-item" style="border:1px solid rgba(124,92,252,.3)">
+              <div class="r-day" style="color:#7c5cfc">Daily (Ph.3+)</div>
+              <div class="r-task" style="color:#7c5cfc">30 min IELTS</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-sb-card">
+          <h3>// Effort by Phase</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                <span style="font-size:.73rem;color:#e8eaf0">Phase 1 · Foundation</span>
+                <span style="font-size:.68rem;color:#f0a500;font-family:monospace">Mo 1-4</span>
+              </div>
+              <div style="height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">
+                <div style="width:22%;height:100%;background:#f0a500;border-radius:3px"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                <span style="font-size:.73rem;color:#e8eaf0">Phase 2 · Build & Ship</span>
+                <span style="font-size:.68rem;color:#4e9eff;font-family:monospace">Mo 5-9</span>
+              </div>
+              <div style="height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">
+                <div style="width:28%;height:100%;background:#4e9eff;border-radius:3px"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                <span style="font-size:.73rem;color:#e8eaf0">Phase 3 · Level Up</span>
+                <span style="font-size:.68rem;color:#7c5cfc;font-family:monospace">Mo 10-15</span>
+              </div>
+              <div style="height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">
+                <div style="width:33%;height:100%;background:#7c5cfc;border-radius:3px"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                <span style="font-size:.73rem;color:#e8eaf0">Phase 4 · Elite Tier</span>
+                <span style="font-size:.68rem;color:#2dd4a0;font-family:monospace">Mo 16-24</span>
+              </div>
+              <div style="height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">
+                <div style="width:44%;height:100%;background:#2dd4a0;border-radius:3px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rm-sb-card">
+          <h3>// Survival Rules</h3>
+          <div class="rm-rules">
+            <div class="rm-rule"><div class="ri">⚡</div><div class="rt"><strong>Max 2 active goals at once.</strong> Never parallel-track everything.</div></div>
+            <div class="rm-rule"><div class="ri">🤖</div><div class="rt"><strong>AI is your co-worker.</strong> Use it to cut every task's time in half.</div></div>
+            <div class="rm-rule"><div class="ri">📅</div><div class="rt"><strong>Monthly review.</strong> Extend goals, never skip them.</div></div>
+            <div class="rm-rule"><div class="ri">💰</div><div class="rt"><strong>Income goals first.</strong> Portfolio → Cases → Upwork before passion work.</div></div>
+            <div class="rm-rule"><div class="ri">🇯🇵</div><div class="rt"><strong>Japanese after IELTS.</strong> Never split language learning focus.</div></div>
+          </div>
+        </div>
+
+      </div><!-- /rm-sidebar -->
+    </div><!-- /rm-content -->
+
+    <div class="rm-footer">
+      <div class="rm-stat"><div class="sv"><span>14</span></div><div class="sl">Total Goals</div></div>
+      <div class="rm-stat"><div class="sv"><span>4</span></div><div class="sl">Phases</div></div>
+      <div class="rm-stat"><div class="sv">3-4<span>h</span></div><div class="sl">Daily Limit</div></div>
+      <div class="rm-stat"><div class="sv">18<span>mo</span></div><div class="sl">Target Window</div></div>
+      <div class="rm-stat"><div class="sv"><span>2</span></div><div class="sl">Active at Once</div></div>
+    </div>
+
+  </div><!-- /roadmap-modal -->
+</div><!-- /roadmap-overlay -->
+
+<script>
+// ─── GOALS DATA ───────────────────────────────────────────────
+const GOALS = [
+  { id:1,  name:'Financial Tracking Project', phase:1, targetHrs: 36,  cat:'Build' },
+  { id:2,  name:'Tax Calculator Project',     phase:1, targetHrs: 36,  cat:'Build' },
+  { id:3,  name:'AI Vibe Coding — Learn',     phase:1, targetHrs: 64,  cat:'Learn' },
+  { id:4,  name:'Self Evaluation Work',       phase:1, targetHrs: 8,   cat:'Review' },
+  { id:5,  name:'Portfolio Website',          phase:2, targetHrs: 80,  cat:'Build' },
+  { id:6,  name:'Case Study Writing (3)',     phase:2, targetHrs: 48,  cat:'Write' },
+  { id:7,  name:"Wife's Upwork Profile",      phase:2, targetHrs: 32,  cat:'Build' },
+  { id:8,  name:'Personal Journal Tracking',  phase:2, targetHrs: 32,  cat:'Build' },
+  { id:9,  name:'Language — IELTS',           phase:3, targetHrs: 130, cat:'Learn' },
+  { id:10, name:'Spine Integration / Framer', phase:3, targetHrs: 48,  cat:'Build' },
+  { id:11, name:'Advanced UI Animation',      phase:3, targetHrs: 64,  cat:'Learn' },
+  { id:12, name:'Toptal Onboarding',          phase:3, targetHrs: 24,  cat:'Career' },
+  { id:13, name:'3D Presentation / AE Reel',  phase:4, targetHrs: 100, cat:'Build' },
+  { id:14, name:'Blender / C4D Assets',       phase:4, targetHrs: 96,  cat:'Build' },
+];
+
+const PHASE_COLORS = { 1:'ph1', 2:'ph2', 3:'ph3', 4:'ph4' };
+const PHASE_BADGE  = { 1:'ph1-bg', 2:'ph2-bg', 3:'ph3-bg', 4:'ph4-bg' };
+const MOOD_EMOJI   = { 1:'😴', 2:'😐', 3:'🙂', 4:'😊', 5:'🔥' };
+
+// ─── STATE ────────────────────────────────────────────────────
+let selectedGoals   = new Set();
+let currentMood     = null;
+let currentSuccess  = null;
+let editingEntryId  = null;
+let weekOffset      = 0;
+let monthOffset     = 0;
+
+// ─── DATA STORAGE ─────────────────────────────────────────────
+const STORAGE_KEY = 'goaltracker_checkins_v1';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+async function saveData(entries) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  if (!fsHandle) await pickFileOnce();
+  if (fsHandle) writeToFile(fsHandle, entries).catch(console.error);
+}
+
+// ─── FILE SYSTEM ACCESS ───────────────────────────────────────
+let fsHandle = null;
+const IDB_DB = 'goaltracker_fs', IDB_STORE = 'handles';
+
+function openIDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(IDB_DB, 1);
+    r.onupgradeneeded = e => e.target.result.createObjectStore(IDB_STORE);
+    r.onsuccess = e => res(e.target.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+
+async function storeHandle(h) {
+  const db = await openIDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(h, 'dataFile');
+    tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+  });
+}
+
+async function retrieveHandle() {
+  const db = await openIDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(IDB_STORE, 'readonly');
+    const r = tx.objectStore(IDB_STORE).get('dataFile');
+    r.onsuccess = () => res(r.result || null);
+    r.onerror = () => rej(r.error);
+  });
+}
+
+async function writeToFile(handle, entries) {
+  const w = await handle.createWritable();
+  await w.write(JSON.stringify(entries, null, 2));
+  await w.close();
+}
+
+async function readFromFile(handle) {
+  const file = await handle.getFile();
+  const text = await file.text();
+  return text.trim() ? JSON.parse(text) : [];
+}
+
+function setFileStatus(linked) {
+  const el = document.getElementById('file-status');
+  el.textContent = linked ? '💾 auto-saving to file' : '';
+  el.style.color = linked ? 'var(--green)' : 'var(--muted)';
+}
+
+async function pickFileOnce() {
+  if (!window.showSaveFilePicker) return;
+  try {
+    const handle = await window.showSaveFilePicker({
+      suggestedName: 'checkins.json',
+      types: [{ description: 'JSON Data', accept: { 'application/json': ['.json'] } }],
+    });
+    fsHandle = handle;
+    await storeHandle(handle);
+    setFileStatus(true);
+  } catch(e) {
+    if (e.name !== 'AbortError') console.error(e);
+  }
+}
+
+async function initFileStorage() {
+  if (!window.showSaveFilePicker) return;
+  try {
+    const handle = await retrieveHandle();
+    if (!handle) return;
+    const perm = await handle.queryPermission({ mode: 'readwrite' });
+    if (perm === 'granted') {
+      fsHandle = handle;
+      // Merge file data into localStorage
+      const fileEntries = await readFromFile(handle);
+      const lsEntries = loadData();
+      const map = new Map();
+      lsEntries.forEach(e => map.set(e.date, e));
+      fileEntries.forEach(e => map.set(e.date, e));
+      const merged = [...map.values()].sort((a,b) => b.date.localeCompare(a.date));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      setFileStatus(true);
+      updateCheckinPage(); renderLog(); renderOverview(); renderWeekly(); renderMonthly();
+    }
+  } catch(e) { console.warn('File storage init:', e); }
+}
+
+// ─── BANGLADESH DATE ──────────────────────────────────────────
+// Bangladesh is UTC+6. Midnight rule: 00:00–03:59 BDT = previous day.
+function getBDDate() {
+  const now = new Date();
+  // BDT offset in minutes: +360
+  const bdtOffsetMs = 6 * 60 * 60 * 1000;
+  const bdtMs = now.getTime() + bdtOffsetMs;
+  const bdtDate = new Date(bdtMs);
+  const h = bdtDate.getUTCHours();
+  // If 00:00–03:59 BDT, treat as previous day
+  if (h < 4) {
+    bdtDate.setUTCDate(bdtDate.getUTCDate() - 1);
+  }
+  return bdtDate.toISOString().split('T')[0]; // YYYY-MM-DD
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const today = getBDDate();
+  document.getElementById('today-label').textContent = formatDate(today);
+
+  buildGoalSelector();
+  updateCheckinPage();
+  renderLog();
+  renderOverview();
+  renderWeekly();
+  renderMonthly();
+  initFileStorage();
+});
+
+// ─── GOAL SELECTOR ────────────────────────────────────────────
+function buildGoalSelector() {
+  const grid = document.getElementById('goal-selector');
+  grid.innerHTML = GOALS.map(g => `
+    <div class="goal-chip" id="chip-${g.id}" onclick="toggleGoal(${g.id})">
+      <input type="checkbox" id="chk-${g.id}" style="pointer-events:none">
+      <div>
+        <div class="goal-name">${g.name}</div>
+        <div class="goal-meta"><span class="ph-badge ${PHASE_BADGE[g.phase]}">Phase ${g.phase}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleGoal(id) {
+  if (selectedGoals.has(id)) {
+    selectedGoals.delete(id);
+    document.getElementById('chip-'+id).classList.remove('selected');
+    document.getElementById('chk-'+id).checked = false;
+  } else {
+    selectedGoals.add(id);
+    document.getElementById('chip-'+id).classList.add('selected');
+    document.getElementById('chk-'+id).checked = true;
+  }
+  updateHoursSection();
+}
+
+function updateHoursSection() {
+  const section = document.getElementById('hours-section');
+  const container = document.getElementById('hours-inputs');
+  if (selectedGoals.size === 0) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+  container.innerHTML = [...selectedGoals].map(id => {
+    const g = GOALS.find(x => x.id === id);
+    return `
+      <div class="hour-row">
+        <label>${g.name}</label>
+        <input type="number" id="hrs-${g.id}" min="0" max="24" step="0.25" value="1" placeholder="hrs">
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── MOOD & SUCCESS ───────────────────────────────────────────
+function setMood(val) {
+  currentMood = val;
+  document.querySelectorAll('.mood-btn').forEach((b,i) => {
+    b.classList.toggle('selected', i+1 === val);
+  });
+}
+
+function setSuccess(val) {
+  currentSuccess = val;
+  document.querySelectorAll('.success-btn').forEach(b => b.classList.remove('selected'));
+  if (val === true)  document.querySelector('.success-btn.yes').classList.add('selected');
+  if (val === false) document.querySelector('.success-btn.no').classList.add('selected');
+  document.getElementById('next-action-section').style.display = val ? 'none' : 'block';
+}
+
+// ─── MODAL ────────────────────────────────────────────────────
+function openModal(entryId = null) {
+  const today = getBDDate();
+  document.getElementById('modal-date-label').textContent = formatDate(today);
+  editingEntryId = entryId;
+
+  if (entryId !== null) {
+    const existing = loadData().find(e => e.id === entryId);
+    if (existing) {
+      selectedGoals = new Set(existing.goals.map(g => g.goalId));
+      document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('.goal-chip input[type=checkbox]').forEach(c => c.checked = false);
+      selectedGoals.forEach(id => {
+        document.getElementById('chip-'+id)?.classList.add('selected');
+        const chk = document.getElementById('chk-'+id);
+        if (chk) chk.checked = true;
+      });
+      updateHoursSection();
+      setTimeout(() => {
+        existing.goals.forEach(g => {
+          const inp = document.getElementById('hrs-'+g.goalId);
+          if (inp) inp.value = g.hours;
+        });
+      }, 0);
+      document.getElementById('ci-notes').value = existing.notes || '';
+      setSuccess(existing.success);
+      document.getElementById('ci-next-action').value = existing.nextAction || '';
+      setMood(existing.mood);
+    }
+  }
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  resetForm();
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// ─── CHECK-IN PAGE STATUS ─────────────────────────────────────
+function updateCheckinPage() {
+  const today = getBDDate();
+  const entries = loadData();
+  const todayEntries = entries.filter(e => e.date === today);
+
+  document.getElementById('checkin-page-date').textContent = formatDate(today);
+
+  if (todayEntries.length > 0) {
+    const total = todayEntries.reduce((s, e) => s + e.totalHours, 0);
+    document.getElementById('checkin-page-status').textContent =
+      `${todayEntries.length} check-in${todayEntries.length > 1 ? 's' : ''} today · ${total.toFixed(1)}h total`;
+    document.getElementById('today-summary').style.display = 'block';
+    document.getElementById('today-summary-content').innerHTML = todayEntries.map(e => {
+      const goalNames = e.goals.map(g => {
+        const go = GOALS.find(x => x.id == g.goalId);
+        return `${go.name} (${g.hours}h)`;
+      }).join(' · ');
+      return `
+        <div style="padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);margin-bottom:8px;">
+          <div style="font-size:13px;color:var(--text);margin-bottom:6px;">${goalNames}</div>
+          <div style="display:flex;gap:16px;font-size:12px;color:var(--muted);flex-wrap:wrap;">
+            <span>Total: <strong style="color:var(--text)">${e.totalHours}h</strong></span>
+            <span>Energy: <strong>${MOOD_EMOJI[e.mood]}</strong></span>
+            <span>Success: <strong style="color:${e.success?'var(--green)':'var(--red)'}">${e.success?'Yes':'No'}</strong></span>
+          </div>
+          ${e.notes ? `<div style="margin-top:8px;font-size:12px;color:var(--muted);font-style:italic;">"${e.notes}"</div>` : ''}
+          ${e.nextAction ? `<div style="margin-top:4px;font-size:12px;color:var(--yellow);">→ Tomorrow: ${e.nextAction}</div>` : ''}
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button onclick="openModal(${e.id})" style="padding:5px 12px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-size:12px;">✏️ Edit</button>
+            <button onclick="deleteEntry(${e.id})" style="padding:5px 12px;border-radius:6px;border:1px solid var(--red);background:transparent;color:var(--red);cursor:pointer;font-size:12px;">🗑 Delete</button>
+          </div>
+        </div>`;
+    }).join('');
+  } else {
+    document.getElementById('checkin-page-status').textContent = "No check-in yet for today.";
+    document.getElementById('today-summary').style.display = 'none';
+  }
+}
+
+async function deleteEntry(id) {
+  if (!confirm('Delete this check-in?')) return;
+  const entries = loadData().filter(e => e.id !== id);
+  await saveData(entries);
+  updateCheckinPage();
+  renderLog();
+  renderOverview();
+  renderWeekly();
+  renderMonthly();
+  showToast('Entry deleted.');
+}
+
+// ─── SUBMIT ───────────────────────────────────────────────────
+async function submitCheckIn() {
+  const date = getBDDate(); // always today (BD time)
+  if (selectedGoals.size === 0) { alert('Please select at least one goal.'); return; }
+  if (currentMood === null) { alert('Please set your energy level.'); return; }
+  if (currentSuccess === null) { alert('Please mark if today was successful.'); return; }
+
+  const goalEntries = [...selectedGoals].map(id => ({
+    goalId: id,
+    hours: parseFloat(document.getElementById('hrs-'+id)?.value || 0)
+  }));
+
+  const entry = {
+    id: Date.now(),
+    date,
+    goals: goalEntries,
+    totalHours: goalEntries.reduce((s,g) => s + g.hours, 0),
+    notes: document.getElementById('ci-notes').value.trim(),
+    success: currentSuccess,
+    nextAction: currentSuccess ? '' : document.getElementById('ci-next-action').value.trim(),
+    mood: currentMood,
+    createdAt: new Date().toISOString()
+  };
+
+  const entries = loadData();
+  if (editingEntryId !== null) {
+    const idx = entries.findIndex(e => e.id === editingEntryId);
+    if (idx >= 0) { entry.id = editingEntryId; entries.splice(idx, 1, entry); }
+    else entries.push(entry);
+  } else {
+    entries.push(entry);
+  }
+  entries.sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
+  await saveData(entries);
+
+  closeModal();
+  showToast('✓ Check-in saved!');
+  updateCheckinPage();
+  renderLog();
+  renderOverview();
+  renderWeekly();
+  renderMonthly();
+}
+
+function resetForm() {
+  selectedGoals.clear();
+  currentMood = null;
+  currentSuccess = null;
+  editingEntryId = null;
+  document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.goal-chip input[type=checkbox]').forEach(c => c.checked = false);
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.success-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('ci-notes').value = '';
+  document.getElementById('hours-section').style.display = 'none';
+  document.getElementById('hours-inputs').innerHTML = '';
+  document.getElementById('next-action-section').style.display = 'none';
+}
+
+// ─── WEEKLY ───────────────────────────────────────────────────
+function getWeekBounds(offset) {
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun
+  const mon = new Date(now);
+  mon.setDate(now.getDate() - ((day+6)%7) + offset*7);
+  mon.setHours(0,0,0,0);
+  const sun = new Date(mon);
+  sun.setDate(mon.getDate() + 6);
+  return { start: mon, end: sun };
+}
+
+function changeWeek(d) {
+  weekOffset += d;
+  renderWeekly();
+}
+
+function renderWeekly() {
+  const { start, end } = getWeekBounds(weekOffset);
+  const startStr = start.toISOString().split('T')[0];
+  const endStr   = end.toISOString().split('T')[0];
+
+  document.getElementById('week-label').textContent =
+    `${formatDateShort(startStr)} – ${formatDateShort(endStr)}`;
+
+  const entries = loadData().filter(e => e.date >= startStr && e.date <= endStr);
+
+  const totalHrs   = entries.reduce((s,e) => s + e.totalHours, 0);
+  const activeDays = entries.length;
+  const avgMood    = entries.length ? (entries.reduce((s,e)=>s+e.mood,0)/entries.length).toFixed(1) : '—';
+  const successPct = entries.length ? Math.round(entries.filter(e=>e.success).length/entries.length*100) : 0;
+
+  document.getElementById('weekly-stats').innerHTML = `
+    <div class="stat-box"><div class="val">${totalHrs.toFixed(1)}h</div><div class="lbl">Total Hours</div></div>
+    <div class="stat-box"><div class="val">${activeDays}/7</div><div class="lbl">Active Days</div></div>
+    <div class="stat-box"><div class="val">${MOOD_EMOJI[Math.round(avgMood)] || avgMood}</div><div class="lbl">Avg Energy</div></div>
+    <div class="stat-box"><div class="val">${successPct}%</div><div class="lbl">Success Rate</div></div>
+  `;
+
+  // Hours by goal
+  const goalHrs = {};
+  entries.forEach(e => e.goals.forEach(g => {
+    goalHrs[g.goalId] = (goalHrs[g.goalId]||0) + g.hours;
+  }));
+  const maxH = Math.max(...Object.values(goalHrs), 1);
+
+  const wg = document.getElementById('weekly-goals');
+  if (Object.keys(goalHrs).length === 0) {
+    wg.innerHTML = '<div class="empty">No data for this week.</div>';
+  } else {
+    wg.innerHTML = Object.entries(goalHrs).sort((a,b)=>b[1]-a[1]).map(([id,hrs]) => {
+      const g = GOALS.find(x=>x.id==id);
+      const pct = (hrs/maxH*100).toFixed(1);
+      return `
+        <div class="prog-row">
+          <div class="prog-header">
+            <span class="goal-title">G${String(g.id).padStart(2,'0')} ${g.name}
+              <span class="ph-badge ${PHASE_BADGE[g.phase]}">Ph${g.phase}</span>
+            </span>
+            <span class="goal-pct">${hrs}h</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill ${PHASE_COLORS[g.phase]}" style="width:${pct}%"></div></div>
+        </div>`;
+    }).join('');
+  }
+
+  // Daily breakdown
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const wd = document.getElementById('weekly-daily');
+  wd.innerHTML = days.map((d,i) => {
+    const date = new Date(start);
+    date.setDate(start.getDate() + i);
+    const dateStr = date.toISOString().split('T')[0];
+    const entry = entries.find(e => e.date === dateStr);
+    const isToday = dateStr === new Date().toISOString().split('T')[0];
+    return `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+        <div style="width:36px;text-align:center;font-size:11px;color:${isToday?'var(--accent)':'var(--muted)'};">${d}</div>
+        <div style="width:52px;font-size:11px;color:var(--muted);">${dateStr.slice(5)}</div>
+        ${entry ? `
+          <div style="flex:1;font-size:12px;">${entry.goals.map(g=>{const go=GOALS.find(x=>x.id==g.goalId);return `<span style='margin-right:4px'>G${String(go.id).padStart(2,'0')} ${g.hours}h</span>`;}).join('')}</div>
+          <div style="font-size:14px;">${MOOD_EMOJI[entry.mood]}</div>
+          <div class="success-dot ${entry.success?'dot-yes':'dot-no'}"></div>
+        ` : `<div style="flex:1;font-size:12px;color:var(--muted);">${isToday?'Today — not checked in yet':'—'}</div>`}
+      </div>`;
+  }).join('');
+}
+
+// ─── MONTHLY ──────────────────────────────────────────────────
+function getMonthBounds(offset) {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth() + offset;
+  const start = new Date(y, m, 1);
+  const end   = new Date(y, m+1, 0);
+  return {
+    start: start.toISOString().split('T')[0],
+    end:   end.toISOString().split('T')[0],
+    label: start.toLocaleString('default', {month:'long', year:'numeric'})
+  };
+}
+
+function changeMonth(d) { monthOffset += d; renderMonthly(); }
+
+function renderMonthly() {
+  const { start, end, label } = getMonthBounds(monthOffset);
+  document.getElementById('month-label').textContent = label;
+
+  const entries = loadData().filter(e => e.date >= start && e.date <= end);
+  const totalHrs   = entries.reduce((s,e) => s+e.totalHours, 0);
+  const activeDays = entries.length;
+  const avgMood    = entries.length ? (entries.reduce((s,e)=>s+e.mood,0)/entries.length).toFixed(1) : '—';
+  const successPct = entries.length ? Math.round(entries.filter(e=>e.success).length/entries.length*100) : 0;
+
+  document.getElementById('monthly-stats').innerHTML = `
+    <div class="stat-box"><div class="val">${totalHrs.toFixed(1)}h</div><div class="lbl">Total Hours</div></div>
+    <div class="stat-box"><div class="val">${activeDays}</div><div class="lbl">Active Days</div></div>
+    <div class="stat-box"><div class="val">${avgMood}</div><div class="lbl">Avg Mood</div></div>
+    <div class="stat-box"><div class="val">${successPct}%</div><div class="lbl">Success Rate</div></div>
+  `;
+
+  // Goal progress this month
+  const goalHrs = {};
+  entries.forEach(e => e.goals.forEach(g => {
+    goalHrs[g.goalId] = (goalHrs[g.goalId]||0)+g.hours;
+  }));
+
+  const mg = document.getElementById('monthly-goals');
+  if (Object.keys(goalHrs).length === 0) {
+    mg.innerHTML = '<div class="empty">No data this month.</div>';
+  } else {
+    mg.innerHTML = Object.entries(goalHrs).sort((a,b)=>b[1]-a[1]).map(([id,hrs]) => {
+      const g = GOALS.find(x=>x.id==id);
+      const pct = Math.min(100, (hrs/g.targetHrs*100)).toFixed(1);
+      return `
+        <div class="prog-row">
+          <div class="prog-header">
+            <span class="goal-title">G${String(g.id).padStart(2,'0')} ${g.name}
+              <span class="ph-badge ${PHASE_BADGE[g.phase]}">Ph${g.phase}</span>
+            </span>
+            <span class="goal-pct">${hrs}h / ${g.targetHrs}h target (${pct}%)</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill ${PHASE_COLORS[g.phase]}" style="width:${pct}%"></div></div>
+        </div>`;
+    }).join('');
+  }
+
+  // Week by week
+  const mw = document.getElementById('monthly-weeks');
+  const weeks = getWeeksInMonth(start, end);
+  mw.innerHTML = weeks.map(({ws,we},i) => {
+    const wEntries = entries.filter(e => e.date >= ws && e.date <= we);
+    const wHrs = wEntries.reduce((s,e)=>s+e.totalHours,0);
+    const wDays = wEntries.length;
+    return `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+        <div style="width:60px;font-size:12px;color:var(--muted);">Week ${i+1}</div>
+        <div style="width:140px;font-size:11px;color:var(--muted);">${ws.slice(5)} – ${we.slice(5)}</div>
+        <div style="flex:1;">
+          <div class="prog-bar"><div class="prog-fill ph1" style="width:${Math.min(100,wHrs/14*100).toFixed(0)}%"></div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text);min-width:80px;text-align:right;">${wHrs.toFixed(1)}h · ${wDays}d</div>
+      </div>`;
+  }).join('');
+}
+
+function getWeeksInMonth(start, end) {
+  const weeks = [];
+  let cur = new Date(start);
+  while (cur.toISOString().split('T')[0] <= end) {
+    const ws = cur.toISOString().split('T')[0];
+    const we = new Date(Math.min(new Date(ws).setDate(new Date(ws).getDate()+6), new Date(end))).toISOString().split('T')[0];
+    weeks.push({ws, we});
+    cur.setDate(cur.getDate()+7);
+  }
+  return weeks;
+}
+
+// ─── OVERVIEW ─────────────────────────────────────────────────
+function renderOverview() {
+  const entries = loadData();
+  const totalHrs = entries.reduce((s,e)=>s+e.totalHours,0);
+  const totalDays = entries.length;
+  const successPct = totalDays ? Math.round(entries.filter(e=>e.success).length/totalDays*100) : 0;
+  const streak = calcStreak(entries);
+  const avgMood = totalDays ? (entries.reduce((s,e)=>s+e.mood,0)/totalDays).toFixed(1) : '—';
+
+  document.getElementById('overview-stats').innerHTML = `
+    <div class="stat-box"><div class="val">${totalHrs.toFixed(0)}h</div><div class="lbl">Total Hours Logged</div></div>
+    <div class="stat-box"><div class="val">${totalDays}</div><div class="lbl">Days Checked In</div></div>
+    <div class="stat-box"><div class="val">${streak}🔥</div><div class="lbl">Current Streak</div></div>
+    <div class="stat-box"><div class="val">${successPct}%</div><div class="lbl">Success Rate</div></div>
+    <div class="stat-box"><div class="val">${avgMood}</div><div class="lbl">Avg Mood</div></div>
+  `;
+
+  // Phase progress
+  const phaseHrs = {1:0,2:0,3:0,4:0};
+  const phaseTarget = {1:0,2:0,3:0,4:0};
+  GOALS.forEach(g => { phaseTarget[g.phase] += g.targetHrs; });
+  entries.forEach(e => e.goals.forEach(g => {
+    const goal = GOALS.find(x=>x.id==g.goalId);
+    if(goal) phaseHrs[goal.phase] += g.hours;
+  }));
+  const phaseNames = {1:'Phase 1 — Foundation',2:'Phase 2 — Build & Ship',3:'Phase 3 — Level Up',4:'Phase 4 — Elite Tier'};
+  document.getElementById('phase-progress').innerHTML = [1,2,3,4].map(p => {
+    const pct = Math.min(100, (phaseHrs[p]/phaseTarget[p]*100)).toFixed(1);
+    return `
+      <div class="prog-row">
+        <div class="prog-header">
+          <span class="goal-title">${phaseNames[p]}</span>
+          <span class="goal-pct">${phaseHrs[p].toFixed(1)}h / ${phaseTarget[p]}h (${pct}%)</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill ${PHASE_COLORS[p]}" style="width:${pct}%"></div></div>
+      </div>`;
+  }).join('');
+
+  // Goal completion all time
+  const goalHrsAll = {};
+  entries.forEach(e => e.goals.forEach(g => {
+    goalHrsAll[g.goalId] = (goalHrsAll[g.goalId]||0)+g.hours;
+  }));
+  document.getElementById('goal-completion').innerHTML = GOALS.map(g => {
+    const hrs = goalHrsAll[g.id] || 0;
+    const pct = Math.min(100, (hrs/g.targetHrs*100)).toFixed(1);
+    const color = pct >= 100 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--muted)';
+    return `
+      <div class="prog-row">
+        <div class="prog-header">
+          <span class="goal-title">G${String(g.id).padStart(2,'0')} ${g.name}
+            <span class="ph-badge ${PHASE_BADGE[g.phase]}">Ph${g.phase}</span>
+          </span>
+          <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h / ${g.targetHrs}h (${pct}%)</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill ${PHASE_COLORS[g.phase]}" style="width:${pct}%"></div></div>
+      </div>`;
+  }).join('');
+
+  // Streaks
+  document.getElementById('streaks').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="stat-box"><div class="val">${streak}</div><div class="lbl">Current Streak (days)</div></div>
+      <div class="stat-box"><div class="val">${calcLongestStreak(entries)}</div><div class="lbl">Longest Streak</div></div>
+      <div class="stat-box"><div class="val">${calcThisWeekDays()}</div><div class="lbl">This Week</div></div>
+      <div class="stat-box"><div class="val">${calcThisMonthDays()}</div><div class="lbl">This Month</div></div>
+    </div>`;
+}
+
+function calcStreak(entries) {
+  if (!entries.length) return 0;
+  const sorted = [...entries].sort((a,b)=>b.date.localeCompare(a.date));
+  const today = new Date().toISOString().split('T')[0];
+  let streak = 0;
+  let check = today;
+  for (const e of sorted) {
+    if (e.date === check) {
+      streak++;
+      const d = new Date(check);
+      d.setDate(d.getDate()-1);
+      check = d.toISOString().split('T')[0];
+    } else if (e.date < check) break;
+  }
+  return streak;
+}
+
+function calcLongestStreak(entries) {
+  if (!entries.length) return 0;
+  const dates = [...new Set(entries.map(e=>e.date))].sort();
+  let max=1, cur=1;
+  for (let i=1;i<dates.length;i++) {
+    const prev = new Date(dates[i-1]);
+    const curr = new Date(dates[i]);
+    const diff = (curr-prev)/(1000*60*60*24);
+    if (diff===1) { cur++; max=Math.max(max,cur); } else cur=1;
+  }
+  return max;
+}
+
+function calcThisWeekDays() {
+  const {start,end} = getWeekBounds(0);
+  const s=start.toISOString().split('T')[0], e=end.toISOString().split('T')[0];
+  return loadData().filter(x=>x.date>=s&&x.date<=e).length;
+}
+
+function calcThisMonthDays() {
+  const {start,end} = getMonthBounds(0);
+  return loadData().filter(e=>e.date>=start&&e.date<=end).length;
+}
+
+// ─── LOG ──────────────────────────────────────────────────────
+function renderLog() {
+  const entries = loadData();
+  const tbody = document.getElementById('log-body');
+  if (!entries.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">No check-ins yet. Start your first one!</td></tr>';
+    return;
+  }
+  tbody.innerHTML = entries.map(e => {
+    const goalNames = e.goals.map(g=>{
+      const go=GOALS.find(x=>x.id==g.goalId);
+      return `G${String(go.id).padStart(2,'0')} (${g.hours}h)`;
+    }).join(', ');
+    return `
+      <tr>
+        <td style="white-space:nowrap">${e.date}</td>
+        <td>${goalNames}</td>
+        <td style="white-space:nowrap">${e.totalHours.toFixed(1)}h</td>
+        <td>${MOOD_EMOJI[e.mood]}</td>
+        <td><span class="success-dot ${e.success?'dot-yes':'dot-no'}"></span> ${e.success?'Yes':'No'}</td>
+        <td style="max-width:200px;font-size:11px;color:var(--muted);">${e.notes||'—'}${e.nextAction?`<br><span style="color:var(--yellow)">→ ${e.nextAction}</span>`:''}</td>
+      </tr>`;
+  }).join('');
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────
+function showTab(tab) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  event.target.classList.add('active');
+  if(tab==='checkin') updateCheckinPage();
+  if(tab==='weekly') renderWeekly();
+  if(tab==='monthly') renderMonthly();
+  if(tab==='overview') renderOverview();
+  if(tab==='log') renderLog();
+}
+
+// ─── ROADMAP MODAL ────────────────────────────────────────────
+function openRoadmap() {
+  document.getElementById('roadmap-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeRoadmap() {
+  document.getElementById('roadmap-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleRoadmapOverlay(e) {
+  if (e.target === document.getElementById('roadmap-overlay')) closeRoadmap();
+}
+
+// Close modals on Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeRoadmap(); }
+});
+
+function formatDate(d) {
+  return new Date(d+'T12:00:00').toLocaleDateString('default',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+}
+
+function formatDateShort(d) {
+  return new Date(d+'T12:00:00').toLocaleDateString('default',{month:'short',day:'numeric'});
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
