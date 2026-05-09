@@ -174,19 +174,6 @@
   .prog-bar { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
   .prog-fill { height: 100%; border-radius: 4px; transition: width .4s; }
 
-  /* PHASE COLORS */
-  .ph1 { background: #6c63ff; }
-  .ph2 { background: #43d98c; }
-  .ph3 { background: #ffc84a; }
-  .ph4 { background: #ff6584; }
-  .ph-badge {
-    display: inline-block; padding: 2px 7px; border-radius: 10px;
-    font-size: 10px; font-weight: 700; margin-left: 6px;
-  }
-  .ph1-bg { background: rgba(108,99,255,.2); color: #6c63ff; }
-  .ph2-bg { background: rgba(67,217,140,.2); color: #43d98c; }
-  .ph3-bg { background: rgba(255,200,74,.2); color: #ffc84a; }
-  .ph4-bg { background: rgba(255,101,132,.2); color: #ff6584; }
 
   /* LOG TABLE */
   .log-table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -531,11 +518,6 @@
 <!-- ======================== OVERVIEW ======================== -->
 <div class="page" id="page-overview">
   <div class="stats-grid" id="overview-stats"></div>
-
-  <div class="card">
-    <h2>Phase Progress</h2>
-    <div id="phase-progress"></div>
-  </div>
 
   <div class="card">
     <h2>Goal Completion (All Time Hours)</h2>
@@ -889,25 +871,30 @@ function checkPass() {
 
 // ─── GOALS DATA ───────────────────────────────────────────────
 const GOALS = [
-  { id:1,  name:'Financial Tracking Project', phase:1, targetHrs: 36,  cat:'Build' },
-  { id:2,  name:'Tax Calculator Project',     phase:1, targetHrs: 36,  cat:'Build' },
-  { id:3,  name:'AI Vibe Coding — Learn',     phase:1, targetHrs: 64,  cat:'Learn' },
-  { id:4,  name:'Self Evaluation Work',       phase:1, targetHrs: 8,   cat:'Review' },
-  { id:5,  name:'Portfolio Website',          phase:2, targetHrs: 80,  cat:'Build' },
-  { id:6,  name:'Case Study Writing (3)',     phase:2, targetHrs: 48,  cat:'Write' },
-  { id:7,  name:"Wife's Upwork Profile",      phase:2, targetHrs: 32,  cat:'Build' },
-  { id:8,  name:'Personal Journal Tracking',  phase:2, targetHrs: 32,  cat:'Build' },
-  { id:9,  name:'Language — IELTS',           phase:3, targetHrs: 130, cat:'Learn' },
-  { id:10, name:'Spine Integration / Framer', phase:3, targetHrs: 48,  cat:'Build' },
-  { id:11, name:'Advanced UI Animation',      phase:3, targetHrs: 64,  cat:'Learn' },
-  { id:12, name:'Toptal Onboarding',          phase:3, targetHrs: 24,  cat:'Career' },
-  { id:13, name:'3D Presentation / AE Reel',  phase:4, targetHrs: 100, cat:'Build' },
-  { id:14, name:'Blender / C4D Assets',       phase:4, targetHrs: 96,  cat:'Build' },
+  { id:1,  name:'Financial Tracking Project', targetHrs: 36,  cat:'Build' },
+  { id:2,  name:'Tax Calculator Project',     targetHrs: 36,  cat:'Build' },
+  { id:3,  name:'AI Vibe Coding — Learn',     targetHrs: 64,  cat:'Learn' },
+  { id:4,  name:'Self Evaluation Work',       targetHrs: 8,   cat:'Review' },
+  { id:5,  name:'Portfolio Website',          targetHrs: 80,  cat:'Build' },
+  { id:6,  name:'Case Study Writing (3)',     targetHrs: 48,  cat:'Write' },
+  { id:7,  name:"Wife's Upwork Profile",      targetHrs: 32,  cat:'Build' },
+  { id:8,  name:'Personal Journal Tracking',  targetHrs: 32,  cat:'Build' },
+  { id:9,  name:'Language — IELTS',           targetHrs: 130, cat:'Learn' },
+  { id:10, name:'Spine Integration / Framer', targetHrs: 48,  cat:'Build' },
+  { id:11, name:'Advanced UI Animation',      targetHrs: 64,  cat:'Learn' },
+  { id:12, name:'Toptal Onboarding',          targetHrs: 24,  cat:'Career' },
+  { id:13, name:'3D Presentation / AE Reel',  targetHrs: 100, cat:'Build' },
+  { id:14, name:'Blender / C4D Assets',       targetHrs: 96,  cat:'Build' },
+  { id:15, name:'Reallocation Plan',           targetHrs: 20,  cat:'Plan' },
+  { id:16, name:'Language — Japan',            targetHrs: 130, cat:'Learn' },
+  { id:17, name:'Job Market Research',         targetHrs: 40,  cat:'Career' },
+  { id:18, name:'Job Apply',                   targetHrs: 30,  cat:'Career' },
+  { id:19, name:'Personal Work',               targetHrs: 50,  cat:'Build' },
+  { id:20, name:'Financial Planning & Organize', targetHrs: 24, cat:'Plan' },
+  { id:21, name:'Design Learning',             targetHrs: 80,  cat:'Learn' },
 ];
-
-const PHASE_COLORS = { 1:'ph1', 2:'ph2', 3:'ph3', 4:'ph4' };
-const PHASE_BADGE  = { 1:'ph1-bg', 2:'ph2-bg', 3:'ph3-bg', 4:'ph4-bg' };
 const MOOD_EMOJI   = { 1:'😴', 2:'😐', 3:'🙂', 4:'😊', 5:'🔥' };
+const WEEKLY_TARGET = 35; // hours per week
 
 // ─── STATE ────────────────────────────────────────────────────
 let selectedGoals   = new Set();
@@ -1036,7 +1023,7 @@ function buildGoalSelector() {
       <input type="checkbox" id="chk-${g.id}" style="pointer-events:none">
       <div>
         <div class="goal-name">${g.name}</div>
-        <div class="goal-meta"><span class="ph-badge ${PHASE_BADGE[g.phase]}">Phase ${g.phase}</span></div>
+        <div class="goal-meta" style="font-size:10px;color:var(--muted);">${g.cat}</div>
       </div>
     </div>
   `).join('');
@@ -1274,15 +1261,21 @@ function renderWeekly() {
   const entries = loadData().filter(e => e.date >= startStr && e.date <= endStr);
 
   const totalHrs   = entries.reduce((s,e) => s + e.totalHours, 0);
-  const activeDays = entries.length;
+  const activeDays = uniqueDays(entries);
   const avgMood    = entries.length ? (entries.reduce((s,e)=>s+e.mood,0)/entries.length).toFixed(1) : '—';
   const successPct = entries.length ? Math.round(entries.filter(e=>e.success).length/entries.length*100) : 0;
 
+  const weeklyPct  = Math.round(totalHrs / WEEKLY_TARGET * 100);
+  const weeklyColor = weeklyPct >= 100 ? 'var(--green)' : weeklyPct >= 70 ? 'var(--yellow)' : 'var(--red)';
   document.getElementById('weekly-stats').innerHTML = `
     <div class="stat-box"><div class="val">${totalHrs.toFixed(1)}h</div><div class="lbl">Total Hours</div></div>
     <div class="stat-box"><div class="val">${activeDays}/7</div><div class="lbl">Active Days</div></div>
     <div class="stat-box"><div class="val">${MOOD_EMOJI[Math.round(avgMood)] || avgMood}</div><div class="lbl">Avg Energy</div></div>
     <div class="stat-box"><div class="val">${successPct}%</div><div class="lbl">Success Rate</div></div>
+    <div class="stat-box">
+      <div class="val" style="color:${weeklyColor}">${weeklyPct}%</div>
+      <div class="lbl">Target ${totalHrs.toFixed(1)} / ${WEEKLY_TARGET}h</div>
+    </div>
   `;
 
   // Hours by goal
@@ -1302,12 +1295,10 @@ function renderWeekly() {
       return `
         <div class="prog-row">
           <div class="prog-header">
-            <span class="goal-title">G${String(g.id).padStart(2,'0')} ${g.name}
-              <span class="ph-badge ${PHASE_BADGE[g.phase]}">Ph${g.phase}</span>
-            </span>
+            <span class="goal-title">${g.name}</span>
             <span class="goal-pct">${hrs}h</span>
           </div>
-          <div class="prog-bar"><div class="prog-fill ${PHASE_COLORS[g.phase]}" style="width:${pct}%"></div></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--accent)"></div></div>
         </div>`;
     }).join('');
   }
@@ -1319,17 +1310,39 @@ function renderWeekly() {
     const date = new Date(start);
     date.setDate(start.getDate() + i);
     const dateStr = date.toISOString().split('T')[0];
-    const entry = entries.find(e => e.date === dateStr);
-    const isToday = dateStr === new Date().toISOString().split('T')[0];
+    const dayEntries = entries.filter(e => e.date === dateStr);
+    const isToday = dateStr === getBDDate();
+    if (dayEntries.length === 0) {
+      return `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+          <div style="width:36px;text-align:center;font-size:11px;font-weight:600;color:${isToday?'var(--accent)':'var(--muted)'};">${d}</div>
+          <div style="width:48px;font-size:11px;color:var(--muted);">${dateStr.slice(5)}</div>
+          <div style="flex:1;font-size:12px;color:var(--muted);">${isToday ? 'Not checked in yet' : '—'}</div>
+        </div>`;
+    }
+    // Aggregate goals across all entries for the day
+    const goalMap = {};
+    dayEntries.forEach(e => e.goals.forEach(g => {
+      goalMap[g.goalId] = (goalMap[g.goalId] || 0) + g.hours;
+    }));
+    const dayTotalHrs = dayEntries.reduce((s,e) => s + e.totalHours, 0);
+    const dayMood = Math.round(dayEntries.reduce((s,e) => s + e.mood, 0) / dayEntries.length);
+    const daySuccess = dayEntries.every(e => e.success);
+    const goalTags = Object.entries(goalMap).map(([id,hrs]) => {
+      const go = GOALS.find(x => x.id == id);
+      const name = go.name.length > 20 ? go.name.slice(0,18) + '…' : go.name;
+      return `<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:11px;">${name} <strong>${hrs}h</strong></span>`;
+    }).join('');
     return `
-      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
-        <div style="width:36px;text-align:center;font-size:11px;color:${isToday?'var(--accent)':'var(--muted)'};">${d}</div>
-        <div style="width:52px;font-size:11px;color:var(--muted);">${dateStr.slice(5)}</div>
-        ${entry ? `
-          <div style="flex:1;font-size:12px;">${entry.goals.map(g=>{const go=GOALS.find(x=>x.id==g.goalId);return `<span style='margin-right:4px'>G${String(go.id).padStart(2,'0')} ${g.hours}h</span>`;}).join('')}</div>
-          <div style="font-size:14px;">${MOOD_EMOJI[entry.mood]}</div>
-          <div class="success-dot ${entry.success?'dot-yes':'dot-no'}"></div>
-        ` : `<div style="flex:1;font-size:12px;color:var(--muted);">${isToday?'Today — not checked in yet':'—'}</div>`}
+      <div style="padding:8px 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <div style="width:36px;text-align:center;font-size:11px;font-weight:600;color:${isToday?'var(--accent)':'var(--text)'};">${d}</div>
+          <div style="width:48px;font-size:11px;color:var(--muted);">${dateStr.slice(5)}</div>
+          <div style="flex:1;font-size:12px;color:var(--muted);">${dayEntries.length > 1 ? `${dayEntries.length} sessions · ` : ''}${dayTotalHrs.toFixed(1)}h total</div>
+          <div style="font-size:14px;">${MOOD_EMOJI[dayMood]}</div>
+          <div class="success-dot ${daySuccess?'dot-yes':'dot-no'}"></div>
+        </div>
+        <div style="padding-left:94px;">${goalTags}</div>
       </div>`;
   }).join('');
 }
@@ -1356,15 +1369,23 @@ function renderMonthly() {
 
   const entries = loadData().filter(e => e.date >= start && e.date <= end);
   const totalHrs   = entries.reduce((s,e) => s+e.totalHours, 0);
-  const activeDays = entries.length;
+  const activeDays = uniqueDays(entries);
   const avgMood    = entries.length ? (entries.reduce((s,e)=>s+e.mood,0)/entries.length).toFixed(1) : '—';
   const successPct = entries.length ? Math.round(entries.filter(e=>e.success).length/entries.length*100) : 0;
 
+  const daysInMonth   = new Date(new Date(start).getFullYear(), new Date(start).getMonth()+1, 0).getDate();
+  const monthlyTarget = Math.round(WEEKLY_TARGET / 7 * daysInMonth);
+  const monthlyPct    = Math.round(totalHrs / monthlyTarget * 100);
+  const monthlyColor  = monthlyPct >= 100 ? 'var(--green)' : monthlyPct >= 70 ? 'var(--yellow)' : 'var(--red)';
   document.getElementById('monthly-stats').innerHTML = `
     <div class="stat-box"><div class="val">${totalHrs.toFixed(1)}h</div><div class="lbl">Total Hours</div></div>
     <div class="stat-box"><div class="val">${activeDays}</div><div class="lbl">Active Days</div></div>
     <div class="stat-box"><div class="val">${avgMood}</div><div class="lbl">Avg Mood</div></div>
     <div class="stat-box"><div class="val">${successPct}%</div><div class="lbl">Success Rate</div></div>
+    <div class="stat-box">
+      <div class="val" style="color:${monthlyColor}">${monthlyPct}%</div>
+      <div class="lbl">Target ${totalHrs.toFixed(1)} / ${monthlyTarget}h</div>
+    </div>
   `;
 
   // Goal progress this month
@@ -1383,12 +1404,10 @@ function renderMonthly() {
       return `
         <div class="prog-row">
           <div class="prog-header">
-            <span class="goal-title">G${String(g.id).padStart(2,'0')} ${g.name}
-              <span class="ph-badge ${PHASE_BADGE[g.phase]}">Ph${g.phase}</span>
-            </span>
-            <span class="goal-pct">${hrs}h / ${g.targetHrs}h target (${pct}%)</span>
+            <span class="goal-title">${g.name}</span>
+            <span class="goal-pct">${hrs}h / ${g.targetHrs}h (${pct}%)</span>
           </div>
-          <div class="prog-bar"><div class="prog-fill ${PHASE_COLORS[g.phase]}" style="width:${pct}%"></div></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--accent)"></div></div>
         </div>`;
     }).join('');
   }
@@ -1399,15 +1418,17 @@ function renderMonthly() {
   mw.innerHTML = weeks.map(({ws,we},i) => {
     const wEntries = entries.filter(e => e.date >= ws && e.date <= we);
     const wHrs = wEntries.reduce((s,e)=>s+e.totalHours,0);
-    const wDays = wEntries.length;
+    const wDays = uniqueDays(wEntries);
+    const wPct = Math.min(100, wHrs / WEEKLY_TARGET * 100).toFixed(0);
+    const wColor = wPct >= 100 ? 'var(--green)' : wPct >= 70 ? 'var(--yellow)' : 'var(--accent)';
     return `
       <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
         <div style="width:60px;font-size:12px;color:var(--muted);">Week ${i+1}</div>
-        <div style="width:140px;font-size:11px;color:var(--muted);">${ws.slice(5)} – ${we.slice(5)}</div>
+        <div style="width:120px;font-size:11px;color:var(--muted);">${ws.slice(5)} – ${we.slice(5)}</div>
         <div style="flex:1;">
-          <div class="prog-bar"><div class="prog-fill ph1" style="width:${Math.min(100,wHrs/14*100).toFixed(0)}%"></div></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${wPct}%;background:${wColor}"></div></div>
         </div>
-        <div style="font-size:12px;color:var(--text);min-width:80px;text-align:right;">${wHrs.toFixed(1)}h · ${wDays}d</div>
+        <div style="font-size:12px;color:var(--text);min-width:100px;text-align:right;">${wHrs.toFixed(1)}h · ${wDays}d · ${wPct}%</div>
       </div>`;
   }).join('');
 }
@@ -1428,10 +1449,10 @@ function getWeeksInMonth(start, end) {
 function renderOverview() {
   const entries = loadData();
   const totalHrs = entries.reduce((s,e)=>s+e.totalHours,0);
-  const totalDays = entries.length;
-  const successPct = totalDays ? Math.round(entries.filter(e=>e.success).length/totalDays*100) : 0;
+  const totalDays = uniqueDays(entries);
+  const successPct = entries.length ? Math.round(entries.filter(e=>e.success).length/entries.length*100) : 0;
   const streak = calcStreak(entries);
-  const avgMood = totalDays ? (entries.reduce((s,e)=>s+e.mood,0)/totalDays).toFixed(1) : '—';
+  const avgMood = entries.length ? (entries.reduce((s,e)=>s+e.mood,0)/entries.length).toFixed(1) : '—';
 
   document.getElementById('overview-stats').innerHTML = `
     <div class="stat-box"><div class="val">${totalHrs.toFixed(0)}h</div><div class="lbl">Total Hours Logged</div></div>
@@ -1441,47 +1462,27 @@ function renderOverview() {
     <div class="stat-box"><div class="val">${avgMood}</div><div class="lbl">Avg Mood</div></div>
   `;
 
-  // Phase progress
-  const phaseHrs = {1:0,2:0,3:0,4:0};
-  const phaseTarget = {1:0,2:0,3:0,4:0};
-  GOALS.forEach(g => { phaseTarget[g.phase] += g.targetHrs; });
-  entries.forEach(e => e.goals.forEach(g => {
-    const goal = GOALS.find(x=>x.id==g.goalId);
-    if(goal) phaseHrs[goal.phase] += g.hours;
-  }));
-  const phaseNames = {1:'Phase 1 — Foundation',2:'Phase 2 — Build & Ship',3:'Phase 3 — Level Up',4:'Phase 4 — Elite Tier'};
-  document.getElementById('phase-progress').innerHTML = [1,2,3,4].map(p => {
-    const pct = Math.min(100, (phaseHrs[p]/phaseTarget[p]*100)).toFixed(1);
-    return `
-      <div class="prog-row">
-        <div class="prog-header">
-          <span class="goal-title">${phaseNames[p]}</span>
-          <span class="goal-pct">${phaseHrs[p].toFixed(1)}h / ${phaseTarget[p]}h (${pct}%)</span>
-        </div>
-        <div class="prog-bar"><div class="prog-fill ${PHASE_COLORS[p]}" style="width:${pct}%"></div></div>
-      </div>`;
-  }).join('');
-
   // Goal completion all time
   const goalHrsAll = {};
   entries.forEach(e => e.goals.forEach(g => {
     goalHrsAll[g.goalId] = (goalHrsAll[g.goalId]||0)+g.hours;
   }));
-  document.getElementById('goal-completion').innerHTML = GOALS.map(g => {
-    const hrs = goalHrsAll[g.id] || 0;
-    const pct = Math.min(100, (hrs/g.targetHrs*100)).toFixed(1);
-    const color = pct >= 100 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--muted)';
-    return `
-      <div class="prog-row">
-        <div class="prog-header">
-          <span class="goal-title">G${String(g.id).padStart(2,'0')} ${g.name}
-            <span class="ph-badge ${PHASE_BADGE[g.phase]}">Ph${g.phase}</span>
-          </span>
-          <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h / ${g.targetHrs}h (${pct}%)</span>
-        </div>
-        <div class="prog-bar"><div class="prog-fill ${PHASE_COLORS[g.phase]}" style="width:${pct}%"></div></div>
-      </div>`;
-  }).join('');
+  const activeGoals = GOALS.filter(g => (goalHrsAll[g.id] || 0) > 0);
+  document.getElementById('goal-completion').innerHTML = activeGoals.length
+    ? activeGoals.map(g => {
+        const hrs = goalHrsAll[g.id];
+        const pct = Math.min(100, (hrs/g.targetHrs*100)).toFixed(1);
+        const color = pct >= 100 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--muted)';
+        return `
+          <div class="prog-row">
+            <div class="prog-header">
+              <span class="goal-title">${g.name}</span>
+              <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h / ${g.targetHrs}h (${pct}%)</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--accent)"></div></div>
+          </div>`;
+      }).join('')
+    : '<div class="empty">No hours logged yet.</div>';
 
   // Streaks
   document.getElementById('streaks').innerHTML = `
@@ -1523,15 +1524,19 @@ function calcLongestStreak(entries) {
   return max;
 }
 
+function uniqueDays(entries) {
+  return new Set(entries.map(e => e.date)).size;
+}
+
 function calcThisWeekDays() {
   const {start,end} = getWeekBounds(0);
   const s=start.toISOString().split('T')[0], e=end.toISOString().split('T')[0];
-  return loadData().filter(x=>x.date>=s&&x.date<=e).length;
+  return uniqueDays(loadData().filter(x=>x.date>=s&&x.date<=e));
 }
 
 function calcThisMonthDays() {
   const {start,end} = getMonthBounds(0);
-  return loadData().filter(e=>e.date>=start&&e.date<=end).length;
+  return uniqueDays(loadData().filter(e=>e.date>=start&&e.date<=end));
 }
 
 // ─── LOG ──────────────────────────────────────────────────────
