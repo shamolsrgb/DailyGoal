@@ -534,6 +534,7 @@
 <div class="page" id="page-log">
   <div class="card">
     <h2>All Check-Ins</h2>
+    <div id="log-pagination"></div>
     <div class="scroll-x">
       <table class="log-table" id="log-table">
         <thead>
@@ -549,6 +550,7 @@
         <tbody id="log-body"></tbody>
       </table>
     </div>
+    <div id="log-pagination-bottom"></div>
   </div>
 </div>
 
@@ -903,6 +905,8 @@ let currentSuccess  = null;
 let editingEntryId  = null;
 let weekOffset      = 0;
 let monthOffset     = 0;
+let logPage         = 0;
+const LOG_PAGE_SIZE = 20;
 
 // ─── DATA STORAGE (GitHub only — no localStorage) ─────────────
 let DATA = [];
@@ -1237,12 +1241,12 @@ function resetForm() {
 function getWeekBounds(offset) {
   const now = new Date();
   const day = now.getDay(); // 0=Sun
-  const mon = new Date(now);
-  mon.setDate(now.getDate() - ((day+6)%7) + offset*7);
-  mon.setHours(0,0,0,0);
-  const sun = new Date(mon);
-  sun.setDate(mon.getDate() + 6);
-  return { start: mon, end: sun };
+  const sun = new Date(now);
+  sun.setDate(now.getDate() - day + offset*7);
+  sun.setHours(0,0,0,0);
+  const sat = new Date(sun);
+  sat.setDate(sun.getDate() + 6);
+  return { start: sun, end: sat };
 }
 
 function changeWeek(d) {
@@ -1304,7 +1308,7 @@ function renderWeekly() {
   }
 
   // Daily breakdown
-  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const wd = document.getElementById('weekly-daily');
   wd.innerHTML = days.map((d,i) => {
     const date = new Date(start);
@@ -1541,13 +1545,20 @@ function calcThisMonthDays() {
 
 // ─── LOG ──────────────────────────────────────────────────────
 function renderLog() {
-  const entries = loadData();
+  const allEntries = loadData().slice().reverse(); // newest first
   const tbody = document.getElementById('log-body');
-  if (!entries.length) {
+  if (!allEntries.length) {
     tbody.innerHTML = '<tr><td colspan="6" class="empty">No check-ins yet. Start your first one!</td></tr>';
+    document.getElementById('log-pagination').innerHTML = '';
+    document.getElementById('log-pagination-bottom').innerHTML = '';
     return;
   }
-  tbody.innerHTML = entries.map(e => {
+
+  const totalPages = Math.ceil(allEntries.length / LOG_PAGE_SIZE);
+  if (logPage >= totalPages) logPage = totalPages - 1;
+  const pageEntries = allEntries.slice(logPage * LOG_PAGE_SIZE, (logPage + 1) * LOG_PAGE_SIZE);
+
+  tbody.innerHTML = pageEntries.map(e => {
     const goalNames = e.goals.map(g=>{
       const go=GOALS.find(x=>x.id==g.goalId);
       return `G${String(go.id).padStart(2,'0')} (${g.hours}h)`;
@@ -1559,9 +1570,23 @@ function renderLog() {
         <td style="white-space:nowrap">${e.totalHours.toFixed(1)}h</td>
         <td>${MOOD_EMOJI[e.mood]}</td>
         <td><span class="success-dot ${e.success?'dot-yes':'dot-no'}"></span> ${e.success?'Yes':'No'}</td>
-        <td style="max-width:200px;font-size:11px;color:var(--muted);">${e.notes||'—'}${e.nextAction?`<br><span style="color:var(--yellow)">→ ${e.nextAction}</span>`:''}</td>
+        <td style="min-width:300px;font-size:11px;color:var(--muted);">${e.notes||'—'}${e.nextAction?`<br><span style="color:var(--yellow)">→ ${e.nextAction}</span>`:''}</td>
       </tr>`;
   }).join('');
+
+  const pagHtml = totalPages <= 1 ? '' : `
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 0;font-size:13px;">
+      <button onclick="changeLogPage(-1)" ${logPage===0?'disabled':''} style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:${logPage===0?'var(--muted)':'var(--text)'};cursor:${logPage===0?'default':'pointer'};">← Prev</button>
+      <span style="color:var(--muted)">Page ${logPage+1} / ${totalPages} &nbsp;·&nbsp; ${allEntries.length} entries</span>
+      <button onclick="changeLogPage(1)" ${logPage===totalPages-1?'disabled':''} style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:${logPage===totalPages-1?'var(--muted)':'var(--text)'};cursor:${logPage===totalPages-1?'default':'pointer'};">Next →</button>
+    </div>`;
+  document.getElementById('log-pagination').innerHTML = pagHtml;
+  document.getElementById('log-pagination-bottom').innerHTML = pagHtml;
+}
+
+function changeLogPage(d) {
+  logPage += d;
+  renderLog();
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────
