@@ -53,14 +53,14 @@
     "goals": [
       {
         "goalId": 8,
-        "hours": 2
+        "hours": 3
       }
     ],
-    "totalHours": 2,
+    "totalHours": 3,
     "notes": "I build a daily goal tracking system, thats help me to identify where i am investing my times, how much time i give, which my goal i am achiving. My personal journal tracking is a today's planning but i execude it today and start tracking from today also. Maybe it will solve my initial prodectivity boost and target achiving.",
     "success": true,
     "nextAction": "",
     "mood": 4,
-    "createdAt": "2026-05-09T18:11:25.853Z"
+    "createdAt": "2026-05-09T18:49:02.957Z"
   }
 ]
