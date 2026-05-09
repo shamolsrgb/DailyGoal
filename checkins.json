@@ -1,5 +1,21 @@
 [
   {
+    "id": 1778350762423,
+    "date": "2026-05-09",
+    "goals": [
+      {
+        "goalId": 1,
+        "hours": 1
+      }
+    ],
+    "totalHours": 1,
+    "notes": "Start building base foundation and upload to git. it's not fully funcational. only onboarding and dashboard structure ready. need to working on login and singup process",
+    "success": true,
+    "nextAction": "",
+    "mood": 3,
+    "createdAt": "2026-05-09T18:19:22.423Z"
+  },
+  {
     "id": 1778350638408,
     "date": "2026-05-09",
     "goals": [
