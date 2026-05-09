@@ -1,5 +1,21 @@
 [
   {
+    "id": 1778350975219,
+    "date": "2026-05-09",
+    "goals": [
+      {
+        "goalId": 5,
+        "hours": 0.5
+      }
+    ],
+    "totalHours": 0.5,
+    "notes": "Initial planning start, idea clearification and confusion clearification",
+    "success": false,
+    "nextAction": "Just information collect, need to work on real output",
+    "mood": 3,
+    "createdAt": "2026-05-09T18:22:55.220Z"
+  },
+  {
     "id": 1778350762423,
     "date": "2026-05-09",
     "goals": [
