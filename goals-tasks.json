@@ -2,14 +2,15 @@
   {
     "goalId": 3,
     "vision": "",
-    "priorities": [
+    "priorities": [],
+    "backlog": [],
+    "completed": [
       {
         "id": "mozymw6xej67",
         "title": "test",
-        "createdAt": "2026-05-10"
+        "createdAt": "2026-05-10",
+        "doneAt": "2026-05-10"
       }
-    ],
-    "backlog": [],
-    "completed": []
+    ]
   }
 ]
