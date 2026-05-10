@@ -80,7 +80,14 @@
     "level": 1,
     "createdAt": "2026-05-10",
     "completedAt": null,
-    "progress": []
+    "progress": [
+      {
+        "id": "mp02knrdt8hx",
+        "comment": "Start understanding about Figma Plugin Development",
+        "pct": 0,
+        "date": "2026-05-10"
+      }
+    ]
   },
   {
     "id": "mp02d84a9yaa",
