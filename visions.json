@@ -16,5 +16,16 @@
         "date": "2026-05-10"
       }
     ]
+  },
+  {
+    "id": "mp007uuvifq8",
+    "title": "Goal Tracking Portal",
+    "goalId": 8,
+    "stage": "backlog",
+    "targetHrs": null,
+    "level": 2,
+    "createdAt": "2026-05-10",
+    "completedAt": null,
+    "progress": []
   }
 ]
