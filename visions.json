@@ -9,5 +9,16 @@
     "createdAt": "2026-05-10",
     "completedAt": null,
     "progress": []
+  },
+  {
+    "id": "mp00q0dtbb58",
+    "title": "1232",
+    "goalId": 1,
+    "stage": "backlog",
+    "targetHrs": null,
+    "level": 1,
+    "createdAt": "2026-05-10",
+    "completedAt": null,
+    "progress": []
   }
 ]
