@@ -229,6 +229,74 @@
   .lock-box input:focus { border-color: var(--accent); }
   .lock-error { font-size: 12px; color: var(--red); margin-bottom: 10px; min-height: 16px; }
 
+  /* VISION BOARD */
+  .vb-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .vb-new-btn { padding: 8px 18px; background: var(--accent); color: #fff; border: none; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .vb-new-btn:hover { opacity: .85; }
+  .vb-stage-section { margin-bottom: 24px; }
+  .vb-stage-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid; display: flex; align-items: center; gap: 8px; }
+  .vb-stage-label.priorities { color: var(--accent); border-color: var(--accent); }
+  .vb-stage-label.vision    { color: #4e9eff;       border-color: #4e9eff; }
+  .vb-stage-label.backlog   { color: var(--muted);  border-color: var(--border); }
+  .vb-stage-label.complete  { color: var(--green);  border-color: var(--green); }
+  .vb-stage-label .vb-count { font-weight: 400; opacity: .7; }
+  /* Vision card */
+  .vb-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .vb-card.priorities { border-left: 3px solid var(--accent); }
+  .vb-card.vision     { border-left: 3px solid #4e9eff; }
+  .vb-card.backlog    { border-left: 3px solid var(--border); }
+  .vb-card.complete   { border-left: 3px solid var(--green); opacity: .8; }
+  .vb-card-header { padding: 14px 16px; cursor: pointer; }
+  .vb-card-header:hover { background: rgba(255,255,255,.02); }
+  .vb-card-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .vb-card-title { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .vb-level-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: rgba(108,99,255,.15); color: var(--accent); white-space: nowrap; flex-shrink: 0; }
+  .vb-goal-badge { font-size: 10px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .vb-card-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .vb-time-tag { font-size: 11px; color: var(--muted); }
+  /* Progress bar on card */
+  .vb-pbar-wrap { margin-top: 8px; }
+  .vb-pbar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .vb-pbar-pct { font-size: 11px; color: var(--muted); white-space: nowrap; min-width: 32px; text-align: right; }
+  .vb-pbar { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .vb-pbar-fill { height: 100%; border-radius: 3px; transition: width .4s; }
+  /* Card body */
+  .vb-card-body { display: none; border-top: 1px solid var(--border); padding: 14px 16px; }
+  .vb-card-body.open { display: block; }
+  /* Progress log */
+  .vb-prog-entry { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 10px; }
+  .vb-prog-entry:last-of-type { border-bottom: none; }
+  .vb-prog-pct { font-size: 12px; font-weight: 700; color: var(--accent); width: 36px; flex-shrink: 0; }
+  .vb-prog-comment { flex: 1; font-size: 12px; color: var(--text); line-height: 1.5; }
+  .vb-prog-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  /* Add progress form */
+  .vb-prog-form { margin-top: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .vb-prog-form textarea { width: 100%; padding: 8px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-size: 12px; font-family: var(--font); resize: vertical; min-height: 60px; outline: none; margin-bottom: 10px; display: block; }
+  .vb-prog-form textarea:focus { border-color: var(--accent); }
+  .vb-pct-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .vb-pct-row label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .vb-pct-row input[type=range] { flex: 1; accent-color: var(--accent); }
+  .vb-pct-val { font-size: 12px; font-weight: 700; color: var(--accent); min-width: 32px; }
+  /* Card actions */
+  .vb-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .vb-act-btn { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); white-space: nowrap; }
+  .vb-act-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .vb-act-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .vb-act-btn.primary:hover { opacity: .85; }
+  .vb-act-btn.danger:hover { border-color: var(--red); color: var(--red); }
+  .vb-act-btn.success { background: var(--green); color: #000; border-color: var(--green); }
+  /* Create vision modal */
+  #cv-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:300; align-items:center; justify-content:center; padding:16px; }
+  #cv-overlay.open { display:flex; }
+  #cv-modal { background:var(--surface); border:1px solid var(--border); border-radius:16px; width:100%; max-width:480px; padding:24px; }
+  #cv-modal h2 { font-size:16px; font-weight:700; margin-bottom:20px; }
+  /* Vision selection in check-in */
+  .vision-row { display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--surface2); border-radius:8px; border:1px solid var(--border); margin-bottom:8px; }
+  .vision-row label { margin:0; flex:1; font-size:12px; color:var(--text); }
+  .vision-row select { width:180px; flex-shrink:0; padding:6px 8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:12px; outline:none; }
+  .vision-row select:focus { border-color:var(--accent); }
+  .vision-warn { font-size:11px; color:var(--red); padding:4px 0; }
+
   /* GOAL DETAILS MODAL */
   #roadmap-overlay {
     display: none; position: fixed; inset: 0; background: rgba(0,0,0,.8);
@@ -398,6 +466,7 @@
     <button class="tab-btn" onclick="showTab('monthly')">Monthly</button>
     <button class="tab-btn" onclick="showTab('overview')">Overview</button>
     <button class="tab-btn" onclick="showTab('log')">Log</button>
+    <button class="tab-btn" onclick="showTab('goals')">Vision</button>
     <button class="btn-roadmap" onclick="openRoadmap()">📋 Goal Details</button>
   </div>
 </nav>
@@ -438,6 +507,11 @@
     <div class="form-row" id="hours-section" style="display:none">
       <label>Hours spent per goal</label>
       <div id="hours-inputs"></div>
+    </div>
+
+    <div class="form-row" id="vision-section" style="display:none">
+      <label>Vision worked on <span style="color:var(--red)">*</span></label>
+      <div id="vision-inputs"></div>
     </div>
 
     <div class="form-row">
@@ -556,6 +630,46 @@
       </table>
     </div>
     <div id="log-pagination-bottom"></div>
+  </div>
+</div>
+
+<!-- ======================== GOALS / VISION BOARD ======================== -->
+<div class="page" id="page-goals">
+  <div class="card">
+    <div class="vb-header">
+      <h2 style="margin:0">Vision Board</h2>
+      <button class="vb-new-btn" onclick="openCreateVision()">+ New Vision</button>
+    </div>
+    <div id="vision-board"></div>
+  </div>
+</div>
+
+<!-- ======================== CREATE VISION MODAL ======================== -->
+<div id="cv-overlay" onclick="handleCVOverlay(event)">
+  <div id="cv-modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 style="margin:0">Create Vision</h2>
+      <button class="modal-close" onclick="closeCreateVision()">✕</button>
+    </div>
+    <div class="form-row">
+      <label>Vision Title</label>
+      <input type="text" id="cv-title" placeholder="What do you want to achieve?">
+    </div>
+    <div class="form-row">
+      <label>Related Goal</label>
+      <select id="cv-goal">
+        <option value="">— Select a goal —</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Target Hours <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <input type="number" id="cv-target" min="1" max="1000" placeholder="e.g. 40">
+    </div>
+    <div class="form-row" id="cv-stage-row" style="display:none">
+      <label>Stage</label>
+      <div id="cv-stage-display" style="font-size:13px;color:var(--muted);padding:8px 0;"></div>
+    </div>
+    <button class="btn-primary" onclick="submitCreateVision()">Create Vision</button>
   </div>
 </div>
 
@@ -984,6 +1098,52 @@ async function saveToGitHub(entries) {
   } catch(e) { setGHStatus('error'); console.error('GitHub save failed:', e); }
 }
 
+// ─── VISIONS STORAGE (visions.json) ───────────────────────────
+const GH_VISIONS_FILE = 'visions.json';
+let VISIONS_DATA = []; // [{ id, title, goalId, stage, targetHrs, level, createdAt, completedAt, progress:[{id,comment,pct,date}] }]
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function getVision(id) { return VISIONS_DATA.find(v => v.id === id); }
+function getVisionsForGoal(goalId) { return VISIONS_DATA.filter(v => v.goalId === goalId); }
+function getActiveVisionsForGoal(goalId) {
+  return VISIONS_DATA.filter(v => v.goalId === goalId && v.stage !== 'complete');
+}
+function saveVision(v) {
+  const idx = VISIONS_DATA.findIndex(x => x.id === v.id);
+  if (idx >= 0) VISIONS_DATA[idx] = v; else VISIONS_DATA.push(v);
+  saveVisionsToGitHub();
+}
+
+async function loadVisionsFromGitHub() {
+  try {
+    const token = getGHToken();
+    const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_VISIONS_FILE}`, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if (!res.ok) { VISIONS_DATA = []; return; }
+    const data = await res.json();
+    VISIONS_DATA = JSON.parse(fromB64(data.content));
+    if (document.getElementById('page-goals').classList.contains('active')) renderGoals();
+  } catch(e) { VISIONS_DATA = []; console.warn('Visions load failed:', e); }
+}
+
+async function saveVisionsToGitHub() {
+  const token = getGHToken();
+  try {
+    const getRes = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_VISIONS_FILE}`, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    const sha = getRes.ok ? (await getRes.json()).sha : undefined;
+    const body = { message: `visions: ${getBDDate()}`, content: toB64(JSON.stringify(VISIONS_DATA, null, 2)) };
+    if (sha) body.sha = sha;
+    await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_VISIONS_FILE}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+  } catch(e) { console.error('Visions save failed:', e); }
+}
+
 function setGHStatus(state) {
   const el = document.getElementById('file-status');
   if (state === 'synced')  { el.textContent = '☁ synced';   el.style.color = 'var(--green)'; }
@@ -994,6 +1154,7 @@ function setGHStatus(state) {
 
 async function initGitHubStorage() {
   await loadFromGitHub();
+  await loadVisionsFromGitHub();
 }
 
 // ─── BANGLADESH DATE ──────────────────────────────────────────
@@ -1069,10 +1230,14 @@ function toggleGoal(id) {
 }
 
 function updateHoursSection() {
-  const section = document.getElementById('hours-section');
+  const section   = document.getElementById('hours-section');
   const container = document.getElementById('hours-inputs');
+  const visSection   = document.getElementById('vision-section');
+  const visContainer = document.getElementById('vision-inputs');
+
   if (selectedGoals.size === 0) {
     section.style.display = 'none';
+    visSection.style.display = 'none';
     return;
   }
   section.style.display = 'block';
@@ -1082,8 +1247,29 @@ function updateHoursSection() {
       <div class="hour-row">
         <label>${g.name}</label>
         <input type="number" id="hrs-${g.id}" min="0" max="24" step="0.25" value="1" placeholder="hrs">
-      </div>
-    `;
+      </div>`;
+  }).join('');
+
+  // Vision selection per goal
+  visSection.style.display = 'block';
+  visContainer.innerHTML = [...selectedGoals].map(id => {
+    const g = GOALS.find(x => x.id === id);
+    const activeVisions = getActiveVisionsForGoal(id);
+    if (!activeVisions.length) {
+      return `
+        <div class="vision-row">
+          <label>${g.name}</label>
+          <span class="vision-warn">No active vision — <a href="#" onclick="openCreateVision();return false;" style="color:var(--accent)">create one</a></span>
+        </div>`;
+    }
+    return `
+      <div class="vision-row">
+        <label>${g.name}</label>
+        <select id="vis-${g.id}">
+          <option value="">— Select vision —</option>
+          ${activeVisions.map(v => `<option value="${v.id}">${escHtml(v.title)}</option>`).join('')}
+        </select>
+      </div>`;
   }).join('');
 }
 
@@ -1207,9 +1393,26 @@ async function submitCheckIn() {
   if (currentMood === null) { alert('Please set your energy level.'); return; }
   if (currentSuccess === null) { alert('Please mark if today was successful.'); return; }
 
+  // Validate vision selection
+  for (const id of selectedGoals) {
+    const activeVisions = getActiveVisionsForGoal(id);
+    if (!activeVisions.length) {
+      const g = GOALS.find(x => x.id === id);
+      alert(`"${g.name}" has no active vision. Please create one before checking in.`);
+      return;
+    }
+    const sel = document.getElementById('vis-'+id);
+    if (sel && !sel.value) {
+      const g = GOALS.find(x => x.id === id);
+      alert(`Please select a vision for "${g.name}".`);
+      return;
+    }
+  }
+
   const goalEntries = [...selectedGoals].map(id => ({
     goalId: id,
-    hours: parseFloat(document.getElementById('hrs-'+id)?.value || 0)
+    hours: parseFloat(document.getElementById('hrs-'+id)?.value || 0),
+    visionId: document.getElementById('vis-'+id)?.value || null
   }));
 
   const entry = {
@@ -1256,6 +1459,8 @@ function resetForm() {
   document.getElementById('ci-notes').value = '';
   document.getElementById('hours-section').style.display = 'none';
   document.getElementById('hours-inputs').innerHTML = '';
+  document.getElementById('vision-inputs').innerHTML = '';
+  document.getElementById('vision-section').style.display = 'none';
   document.getElementById('next-action-section').style.display = 'none';
 }
 
@@ -1659,6 +1864,7 @@ function showTab(tab) {
   if(tab==='monthly') renderMonthly();
   if(tab==='overview') renderOverview();
   if(tab==='log') renderLog();
+  if(tab==='goals') renderGoals();
 }
 
 // ─── ROADMAP MODAL ────────────────────────────────────────────
@@ -1678,7 +1884,7 @@ function handleRoadmapOverlay(e) {
 
 // Close modals on Escape key
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeRoadmap(); }
+  if (e.key === 'Escape') { closeModal(); closeRoadmap(); closeCreateVision(); }
 });
 
 function formatDate(d) {
@@ -1687,6 +1893,260 @@ function formatDate(d) {
 
 function formatDateShort(d) {
   return new Date(d+'T12:00:00').toLocaleDateString('default',{month:'short',day:'numeric'});
+}
+
+// ─── VISION BOARD ─────────────────────────────────────────────
+let expandedVisions = new Set();
+let showProgressForm = new Set();
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+const STAGE_ORDER = ['vision','priorities','backlog','complete'];
+const STAGE_LABELS = { priorities:'Upcoming', vision:'Primary', backlog:'Backlog', complete:'Complete' };
+
+function visionHoursLogged(visionId) {
+  return loadData().reduce((sum, entry) => {
+    const g = entry.goals.find(g => g.visionId === visionId);
+    return sum + (g ? g.hours : 0);
+  }, 0);
+}
+
+function visionProgress(v) {
+  if (!v.progress.length) return 0;
+  return v.progress[v.progress.length - 1].pct;
+}
+
+function renderGoals() {
+  const board = document.getElementById('vision-board');
+  if (!board) return;
+  const stages = STAGE_ORDER.filter(s => s !== 'complete' || VISIONS_DATA.some(v => v.stage === 'complete'));
+
+  if (!VISIONS_DATA.length) {
+    board.innerHTML = '<div class="empty">No visions yet — click <strong>+ New Vision</strong> to get started.</div>';
+    return;
+  }
+
+  board.innerHTML = stages.map(stage => {
+    const cards = VISIONS_DATA.filter(v => v.stage === stage);
+    if (!cards.length) return '';
+    return `
+      <div class="vb-stage-section">
+        <div class="vb-stage-label ${stage}">
+          ${STAGE_LABELS[stage]} <span class="vb-count">(${cards.length})</span>
+        </div>
+        ${cards.map(v => renderVisionCard(v)).join('')}
+      </div>`;
+  }).join('');
+}
+
+function renderVisionCard(v) {
+  const goal     = GOALS.find(g => g.id === v.goalId);
+  const isOpen   = expandedVisions.has(v.id);
+  const showForm = showProgressForm.has(v.id);
+  const pct      = visionProgress(v);
+  const hrs      = visionHoursLogged(v.id);
+  const barColor = pct >= 100 ? 'var(--green)' : pct >= 50 ? 'var(--accent)' : '#4e9eff';
+
+  const progressLog = v.progress.slice().reverse().map(p => `
+    <div class="vb-prog-entry">
+      <span class="vb-prog-pct">${p.pct}%</span>
+      <span class="vb-prog-comment">${escHtml(p.comment)}</span>
+      <span class="vb-prog-date">${p.date}</span>
+    </div>`).join('') || '<div style="font-size:12px;color:var(--muted);padding:4px 0;">No progress updates yet.</div>';
+
+  const progFormHtml = showForm ? `
+    <div class="vb-prog-form">
+      <textarea id="vpf-comment-${v.id}" placeholder="What did you accomplish? What did you learn?"></textarea>
+      <div class="vb-pct-row">
+        <label>Progress</label>
+        <input type="range" id="vpf-pct-${v.id}" min="0" max="100" step="5" value="${pct}"
+          oninput="document.getElementById('vpf-val-${v.id}').textContent=this.value+'%'">
+        <span class="vb-pct-val" id="vpf-val-${v.id}">${pct}%</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="vb-act-btn primary" onclick="submitProgress('${v.id}')">Save Progress</button>
+        <button class="vb-act-btn" onclick="toggleProgressForm('${v.id}')">Cancel</button>
+      </div>
+    </div>` : '';
+
+  // Promotion button — strict one-way: Backlog → Upcoming → Primary (locked)
+  const primaryCount  = VISIONS_DATA.filter(x => x.stage === 'vision').length;
+  const upcomingCount = VISIONS_DATA.filter(x => x.stage === 'priorities').length;
+  let promoteBtn = '';
+  if (v.stage === 'backlog') {
+    if (upcomingCount < 3) promoteBtn = `<button class="vb-act-btn" onclick="promoteVision('${v.id}')">↑ Move to Upcoming</button>`;
+    else promoteBtn = `<button class="vb-act-btn" disabled title="Upcoming is full (max 3)" style="opacity:.35;cursor:not-allowed">Upcoming full</button>`;
+  } else if (v.stage === 'priorities') {
+    if (primaryCount < 3) promoteBtn = `<button class="vb-act-btn primary" onclick="promoteVision('${v.id}')">↑ Move to Primary</button>`;
+    else promoteBtn = `<button class="vb-act-btn" disabled title="Primary is full (max 3)" style="opacity:.35;cursor:not-allowed">Primary full</button>`;
+  }
+  const moveBtns = promoteBtn;
+
+  const levelUpBtn = v.stage === 'complete'
+    ? `<button class="vb-act-btn success" onclick="levelUpVision('${v.id}')">↑ Level Up</button>` : '';
+
+  const editBtn   = `<button class="vb-act-btn" onclick="openCreateVision('${v.id}')">Edit</button>`;
+  const deleteBtn = `<button class="vb-act-btn danger" onclick="deleteVision('${v.id}')">Delete</button>`;
+
+  return `
+    <div class="vb-card ${v.stage}" id="vbc-${v.id}">
+      <div class="vb-card-header" onclick="toggleVisionCard('${v.id}')">
+        <div class="vb-card-top">
+          <div class="vb-card-title">${escHtml(v.title)}</div>
+          <span class="vb-level-badge">Lv ${v.level}</span>
+        </div>
+        <div class="vb-card-meta">
+          ${goal ? `<span class="vb-goal-badge">${escHtml(goal.name)}</span>` : ''}
+          <span class="vb-time-tag">${hrs.toFixed(1)}h logged${v.targetHrs ? ' / '+v.targetHrs+'h target' : ''}</span>
+        </div>
+        <div class="vb-pbar-wrap">
+          <div class="vb-pbar-row">
+            <div class="vb-pbar"><div class="vb-pbar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+            <span class="vb-pbar-pct">${pct}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="vb-card-body ${isOpen ? 'open' : ''}">
+        <div style="margin-bottom:12px;">${progressLog}</div>
+        ${v.stage !== 'complete' ? `<button class="vb-act-btn primary" onclick="toggleProgressForm('${v.id}')">+ Add Progress</button>` : ''}
+        ${progFormHtml}
+        <div class="vb-actions">
+          ${moveBtns}
+          ${levelUpBtn}
+          ${editBtn}
+          ${deleteBtn}
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleVisionCard(id) {
+  if (expandedVisions.has(id)) expandedVisions.delete(id);
+  else expandedVisions.add(id);
+  reRenderVisionCard(id);
+}
+
+function toggleProgressForm(id) {
+  if (showProgressForm.has(id)) showProgressForm.delete(id);
+  else { showProgressForm.add(id); expandedVisions.add(id); }
+  reRenderVisionCard(id);
+  if (showProgressForm.has(id)) setTimeout(() => document.getElementById('vpf-comment-'+id)?.focus(), 0);
+}
+
+function reRenderVisionCard(id) {
+  const v = getVision(id);
+  if (!v) return;
+  const card = document.getElementById('vbc-'+id);
+  if (card) card.outerHTML = renderVisionCard(v);
+}
+
+function submitProgress(visionId) {
+  const comment = document.getElementById('vpf-comment-'+visionId)?.value.trim() || '';
+  const pct     = parseInt(document.getElementById('vpf-pct-'+visionId)?.value || 0);
+  if (!comment) { alert('Please add a comment about your progress.'); return; }
+  const v = getVision(visionId);
+  if (!v) return;
+  v.progress.push({ id: uid(), comment, pct, date: getBDDate() });
+  if (pct >= 100 && v.stage !== 'complete') {
+    v.stage = 'complete';
+    v.completedAt = getBDDate();
+    showToast('Vision completed! 🎉');
+  }
+  showProgressForm.delete(visionId);
+  expandedVisions.add(visionId);
+  saveVision(v);
+  renderGoals();
+}
+
+function promoteVision(id) {
+  const v = getVision(id);
+  if (!v) return;
+  if (v.stage === 'backlog') {
+    if (VISIONS_DATA.filter(x => x.stage === 'priorities').length >= 3) return;
+    v.stage = 'priorities';
+  } else if (v.stage === 'priorities') {
+    if (VISIONS_DATA.filter(x => x.stage === 'vision').length >= 3) return;
+    v.stage = 'vision';
+  } else return;
+  saveVision(v);
+  renderGoals();
+}
+
+function levelUpVision(id) {
+  const orig = getVision(id);
+  if (!orig) return;
+  const newV = {
+    id: uid(), title: orig.title, goalId: orig.goalId,
+    stage: 'backlog', targetHrs: orig.targetHrs,
+    level: orig.level + 1, createdAt: getBDDate(),
+    completedAt: null, progress: []
+  };
+  VISIONS_DATA.push(newV);
+  saveVisionsToGitHub();
+  renderGoals();
+  showToast(`Level ${newV.level} vision created!`);
+}
+
+function deleteVision(id) {
+  if (!confirm('Delete this vision? This cannot be undone.')) return;
+  VISIONS_DATA = VISIONS_DATA.filter(v => v.id !== id);
+  saveVisionsToGitHub();
+  renderGoals();
+}
+
+// ─── CREATE / EDIT VISION MODAL ───────────────────────────────
+let editingVisionId = null;
+
+function openCreateVision(visionId = null) {
+  editingVisionId = visionId;
+  const v = visionId ? getVision(visionId) : null;
+  const sel = document.getElementById('cv-goal');
+  sel.innerHTML = '<option value="">— Select a goal —</option>' +
+    GOALS.map(g => `<option value="${g.id}" ${v && v.goalId === g.id ? 'selected' : ''}>${escHtml(g.name)}</option>`).join('');
+  document.getElementById('cv-title').value  = v ? v.title : '';
+  document.getElementById('cv-target').value = v && v.targetHrs ? v.targetHrs : '';
+  const stageRow = document.getElementById('cv-stage-row');
+  if (v) {
+    stageRow.style.display = 'block';
+    document.getElementById('cv-stage-display').textContent = `Current stage: ${STAGE_LABELS[v.stage]} — stage cannot be changed manually`;
+  } else {
+    stageRow.style.display = 'none';
+  }
+  document.getElementById('cv-modal').querySelector('h2').textContent = v ? 'Edit Vision' : 'Create Vision';
+  document.getElementById('cv-overlay').querySelector('.btn-primary').textContent = v ? 'Save Changes' : 'Create Vision';
+  document.getElementById('cv-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('cv-title').focus(), 0);
+}
+function closeCreateVision() {
+  document.getElementById('cv-overlay').classList.remove('open');
+  editingVisionId = null;
+}
+function handleCVOverlay(e) { if (e.target === document.getElementById('cv-overlay')) closeCreateVision(); }
+
+function submitCreateVision() {
+  const title     = document.getElementById('cv-title').value.trim();
+  const goalId    = parseInt(document.getElementById('cv-goal').value);
+  const targetHrs = parseFloat(document.getElementById('cv-target').value) || null;
+  if (!title)  { alert('Please enter a vision title.'); return; }
+  if (!goalId) { alert('Please select a related goal.'); return; }
+
+  if (editingVisionId) {
+    const v = getVision(editingVisionId);
+    if (v) { v.title = title; v.goalId = goalId; v.targetHrs = targetHrs; saveVision(v); }
+    closeCreateVision();
+    renderGoals();
+    showToast('Vision updated!');
+  } else {
+    const v = { id: uid(), title, goalId, stage: 'backlog', targetHrs, level: 1, createdAt: getBDDate(), completedAt: null, progress: [] };
+    VISIONS_DATA.push(v);
+    saveVisionsToGitHub();
+    closeCreateVision();
+    expandedVisions.add(v.id);
+    renderGoals();
+    showToast('Vision created!');
+  }
 }
 
 function showToast(msg) {
