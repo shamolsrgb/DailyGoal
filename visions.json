@@ -16,23 +16,5 @@
         "date": "2026-05-10"
       }
     ]
-  },
-  {
-    "id": "mp007uuvifq8",
-    "title": "Goal Tracking Portal",
-    "goalId": 8,
-    "stage": "complete",
-    "targetHrs": null,
-    "level": 2,
-    "createdAt": "2026-05-10",
-    "completedAt": "2026-05-10",
-    "progress": [
-      {
-        "id": "mp0095dr418d",
-        "comment": "Vision option introduce and add extra focus to track my daily goal achievement",
-        "pct": 100,
-        "date": "2026-05-10"
-      }
-    ]
   }
 ]
