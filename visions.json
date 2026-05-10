@@ -3,11 +3,18 @@
     "id": "mozz75prahl0",
     "title": "Goal Tracking Portal",
     "goalId": 8,
-    "stage": "vision",
+    "stage": "complete",
     "targetHrs": null,
     "level": 1,
     "createdAt": "2026-05-10",
-    "completedAt": null,
-    "progress": []
+    "completedAt": "2026-05-10",
+    "progress": [
+      {
+        "id": "mp007rqqivng",
+        "comment": "Already done initial structure and start using it. it was done by 9 May",
+        "pct": 100,
+        "date": "2026-05-10"
+      }
+    ]
   }
 ]
