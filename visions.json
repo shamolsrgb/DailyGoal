@@ -129,5 +129,17 @@
     "createdAt": "2026-05-10",
     "completedAt": null,
     "progress": []
+  },
+  {
+    "id": "mp02efwckjph",
+    "title": "Reallocation Planning",
+    "cat": "Career",
+    "goalId": null,
+    "stage": "backlog",
+    "targetHrs": null,
+    "level": 1,
+    "createdAt": "2026-05-10",
+    "completedAt": null,
+    "progress": []
   }
 ]
