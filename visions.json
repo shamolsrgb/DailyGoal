@@ -9,5 +9,17 @@
     "createdAt": "2026-05-10",
     "completedAt": null,
     "progress": []
+  },
+  {
+    "id": "mp02a2yrdzrz",
+    "title": "AI Vibe Coding",
+    "cat": "Skill Learning",
+    "goalId": null,
+    "stage": "backlog",
+    "targetHrs": null,
+    "level": 1,
+    "createdAt": "2026-05-10",
+    "completedAt": null,
+    "progress": []
   }
 ]
