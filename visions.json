@@ -19,6 +19,13 @@
     "level": 1,
     "createdAt": "2026-05-10",
     "completedAt": null,
-    "progress": []
+    "progress": [
+      {
+        "id": "mp00cgl9lj28",
+        "comment": "test",
+        "pct": 5,
+        "date": "2026-05-10"
+      }
+    ]
   }
 ]
