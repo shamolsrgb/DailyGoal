@@ -8,6 +8,13 @@
     "level": 1,
     "createdAt": "2026-05-10",
     "completedAt": null,
-    "progress": []
+    "progress": [
+      {
+        "id": "mp0206n5r8su",
+        "comment": "222",
+        "pct": 1,
+        "date": "2026-05-10"
+      }
+    ]
   }
 ]
