@@ -520,6 +520,11 @@
   <div class="stats-grid" id="overview-stats"></div>
 
   <div class="card">
+    <h2>Category Breakdown</h2>
+    <div id="cat-breakdown"></div>
+  </div>
+
+  <div class="card">
     <h2>Goal Completion (All Time Hours)</h2>
     <div id="goal-completion"></div>
   </div>
@@ -876,24 +881,27 @@ const GOALS = [
   { id:1,  name:'Financial Tracking Project', targetHrs: 36,  cat:'Build' },
   { id:2,  name:'Tax Calculator Project',     targetHrs: 36,  cat:'Build' },
   { id:3,  name:'AI Vibe Coding — Learn',     targetHrs: 64,  cat:'Learn' },
-  { id:4,  name:'Self Evaluation Work',       targetHrs: 8,   cat:'Review' },
-  { id:5,  name:'Portfolio Website',          targetHrs: 80,  cat:'Build' },
-  { id:6,  name:'Case Study Writing (3)',     targetHrs: 48,  cat:'Write' },
-  { id:7,  name:"Wife's Upwork Profile",      targetHrs: 32,  cat:'Build' },
-  { id:8,  name:'Personal Journal Tracking',  targetHrs: 32,  cat:'Build' },
-  { id:9,  name:'Language — IELTS',           targetHrs: 130, cat:'Learn' },
-  { id:10, name:'Spine Integration / Framer', targetHrs: 48,  cat:'Build' },
+  { id:4,  name:'Self Evaluation Work',       targetHrs: 8,   cat:'Career' },
+  { id:5,  name:'Portfolio Website',          targetHrs: 80,  cat:'Portfolio Building' },
+  { id:6,  name:'Case Study Writing (3)',     targetHrs: 48,  cat:'Portfolio Building' },
+  { id:7,  name:"Wife's Upwork Profile",      targetHrs: 32,  cat:'Career' },
+  { id:8,  name:'Personal Journal Tracking',  targetHrs: 32,  cat:'Organize' },
+  { id:9,  name:'Language — IELTS',           targetHrs: 130, cat:'Language Learning' },
+  { id:10, name:'Spine Integration / Framer', targetHrs: 48,  cat:'Learn' },
   { id:11, name:'Advanced UI Animation',      targetHrs: 64,  cat:'Learn' },
   { id:12, name:'Toptal Onboarding',          targetHrs: 24,  cat:'Career' },
-  { id:13, name:'3D Presentation / AE Reel',  targetHrs: 100, cat:'Build' },
-  { id:14, name:'Blender / C4D Assets',       targetHrs: 96,  cat:'Build' },
-  { id:15, name:'Reallocation Plan',           targetHrs: 20,  cat:'Plan' },
-  { id:16, name:'Language — Japan',            targetHrs: 130, cat:'Learn' },
+  { id:13, name:'3D Presentation / AE Reel',  targetHrs: 100, cat:'Learn' },
+  { id:14, name:'Blender / C4D Assets',       targetHrs: 96,  cat:'Learn' },
+  { id:15, name:'Reallocation Plan',           targetHrs: 20,  cat:'Career' },
+  { id:16, name:'Language — Japan',            targetHrs: 130, cat:'Language Learning' },
   { id:17, name:'Job Market Research',         targetHrs: 40,  cat:'Career' },
   { id:18, name:'Job Apply',                   targetHrs: 30,  cat:'Career' },
-  { id:19, name:'Personal Work',               targetHrs: 50,  cat:'Build' },
-  { id:20, name:'Financial Planning & Organize', targetHrs: 24, cat:'Plan' },
+  { id:19, name:'Personal Work',               targetHrs: 50,  cat:'Organize' },
+  { id:20, name:'Financial Planning & Organize', targetHrs: 24, cat:'Organize' },
   { id:21, name:'Design Learning',             targetHrs: 80,  cat:'Learn' },
+  { id:22, name:'Figma Plugin Development',    targetHrs: 40,  cat:'Learn' },
+  { id:23, name:'Design File Organize',        targetHrs: 16,  cat:'Organize' },
+  { id:24, name:'Portfolio Design Work',       targetHrs: 40,  cat:'Portfolio Building' },
 ];
 const MOOD_EMOJI   = { 1:'😴', 2:'😐', 3:'🙂', 4:'😊', 5:'🔥' };
 const WEEKLY_TARGET = 35; // hours per week
@@ -1022,12 +1030,26 @@ document.addEventListener('DOMContentLoaded', () => {
 // ─── GOAL SELECTOR ────────────────────────────────────────────
 function buildGoalSelector() {
   const grid = document.getElementById('goal-selector');
-  grid.innerHTML = GOALS.map(g => `
-    <div class="goal-chip" id="chip-${g.id}" onclick="toggleGoal(${g.id})">
-      <input type="checkbox" id="chk-${g.id}" style="pointer-events:none">
-      <div>
-        <div class="goal-name">${g.name}</div>
-        <div class="goal-meta" style="font-size:10px;color:var(--muted);">${g.cat}</div>
+  const catOrder = ['Learn', 'Language Learning', 'Career', 'Build', 'Portfolio Building', 'Organize', 'Write', 'Plan', 'Review'];
+  const grouped = {};
+  GOALS.forEach(g => { (grouped[g.cat] = grouped[g.cat] || []).push(g); });
+  const cats = catOrder.filter(c => grouped[c]);
+  Object.keys(grouped).forEach(c => { if (!cats.includes(c)) cats.push(c); });
+
+  grid.style.display = 'flex';
+  grid.style.flexDirection = 'column';
+  grid.style.gap = '16px';
+
+  grid.innerHTML = cats.map(cat => `
+    <div>
+      <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border);">${cat}</div>
+      <div class="goal-grid">
+        ${grouped[cat].map(g => `
+          <div class="goal-chip" id="chip-${g.id}" onclick="toggleGoal(${g.id})">
+            <input type="checkbox" id="chk-${g.id}" style="pointer-events:none">
+            <div class="goal-name">${g.name}</div>
+          </div>
+        `).join('')}
       </div>
     </div>
   `).join('');
@@ -1238,6 +1260,10 @@ function resetForm() {
 }
 
 // ─── WEEKLY ───────────────────────────────────────────────────
+function toDateStr(date) {
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+
 function getWeekBounds(offset) {
   const now = new Date();
   const day = now.getDay(); // 0=Sun
@@ -1256,8 +1282,8 @@ function changeWeek(d) {
 
 function renderWeekly() {
   const { start, end } = getWeekBounds(weekOffset);
-  const startStr = start.toISOString().split('T')[0];
-  const endStr   = end.toISOString().split('T')[0];
+  const startStr = toDateStr(start);
+  const endStr   = toDateStr(end);
 
   document.getElementById('week-label').textContent =
     `${formatDateShort(startStr)} – ${formatDateShort(endStr)}`;
@@ -1313,7 +1339,7 @@ function renderWeekly() {
   wd.innerHTML = days.map((d,i) => {
     const date = new Date(start);
     date.setDate(start.getDate() + i);
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = toDateStr(date);
     const dayEntries = entries.filter(e => e.date === dateStr);
     const isToday = dateStr === getBDDate();
     if (dayEntries.length === 0) {
@@ -1359,8 +1385,8 @@ function getMonthBounds(offset) {
   const start = new Date(y, m, 1);
   const end   = new Date(y, m+1, 0);
   return {
-    start: start.toISOString().split('T')[0],
-    end:   end.toISOString().split('T')[0],
+    start: toDateStr(start),
+    end:   toDateStr(end),
     label: start.toLocaleString('default', {month:'long', year:'numeric'})
   };
 }
@@ -1440,9 +1466,11 @@ function renderMonthly() {
 function getWeeksInMonth(start, end) {
   const weeks = [];
   let cur = new Date(start);
-  while (cur.toISOString().split('T')[0] <= end) {
-    const ws = cur.toISOString().split('T')[0];
-    const we = new Date(Math.min(new Date(ws).setDate(new Date(ws).getDate()+6), new Date(end))).toISOString().split('T')[0];
+  while (toDateStr(cur) <= end) {
+    const ws = toDateStr(cur);
+    const endDate = new Date(end + 'T12:00:00');
+    const weDate  = new Date(cur); weDate.setDate(cur.getDate()+6);
+    const we = toDateStr(weDate > endDate ? endDate : weDate);
     weeks.push({ws, we});
     cur.setDate(cur.getDate()+7);
   }
@@ -1459,12 +1487,43 @@ function renderOverview() {
   const avgMood = entries.length ? (entries.reduce((s,e)=>s+e.mood,0)/entries.length).toFixed(1) : '—';
 
   document.getElementById('overview-stats').innerHTML = `
-    <div class="stat-box"><div class="val">${totalHrs.toFixed(0)}h</div><div class="lbl">Total Hours Logged</div></div>
+    <div class="stat-box"><div class="val">${totalHrs.toFixed(1)}h</div><div class="lbl">Total Hours Logged</div></div>
     <div class="stat-box"><div class="val">${totalDays}</div><div class="lbl">Days Checked In</div></div>
     <div class="stat-box"><div class="val">${streak}🔥</div><div class="lbl">Current Streak</div></div>
     <div class="stat-box"><div class="val">${successPct}%</div><div class="lbl">Success Rate</div></div>
     <div class="stat-box"><div class="val">${avgMood}</div><div class="lbl">Avg Mood</div></div>
   `;
+
+  // Category breakdown
+  const catHrs = {};
+  entries.forEach(e => e.goals.forEach(g => {
+    const goal = GOALS.find(x => x.id == g.goalId);
+    if (goal) catHrs[goal.cat] = (catHrs[goal.cat] || 0) + g.hours;
+  }));
+  const catTotal = Object.values(catHrs).reduce((s, h) => s + h, 0);
+  const catOrder = ['Learn', 'Language Learning', 'Career', 'Build', 'Portfolio Building', 'Organize', 'Write', 'Plan', 'Review'];
+  const cats = catOrder.filter(c => catHrs[c]);
+  Object.keys(catHrs).forEach(c => { if (!cats.includes(c)) cats.push(c); });
+  const catColors = {
+    'Learn': '#6c63ff', 'Language Learning': '#4e9eff', 'Career': '#ffc84a',
+    'Build': '#43d98c', 'Portfolio Building': '#ff6584', 'Organize': '#a78bfa',
+    'Write': '#34d399', 'Plan': '#fb923c', 'Review': '#94a3b8'
+  };
+  document.getElementById('cat-breakdown').innerHTML = cats.length
+    ? cats.map(cat => {
+        const hrs = catHrs[cat];
+        const pct = catTotal > 0 ? (hrs / catTotal * 100).toFixed(1) : 0;
+        const color = catColors[cat] || 'var(--accent)';
+        return `
+          <div class="prog-row">
+            <div class="prog-header">
+              <span class="goal-title">${cat}</span>
+              <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h &nbsp;<span style="color:var(--muted);font-weight:400">${pct}%</span></span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
+          </div>`;
+      }).join('')
+    : '<div class="empty">No hours logged yet.</div>';
 
   // Goal completion all time
   const goalHrsAll = {};
@@ -1501,15 +1560,15 @@ function renderOverview() {
 function calcStreak(entries) {
   if (!entries.length) return 0;
   const sorted = [...entries].sort((a,b)=>b.date.localeCompare(a.date));
-  const today = new Date().toISOString().split('T')[0];
+  const today = getBDDate();
   let streak = 0;
   let check = today;
   for (const e of sorted) {
     if (e.date === check) {
       streak++;
-      const d = new Date(check);
-      d.setDate(d.getDate()-1);
-      check = d.toISOString().split('T')[0];
+      const [y,m,d] = check.split('-').map(Number);
+      const prev = new Date(y, m-1, d-1);
+      check = toDateStr(prev);
     } else if (e.date < check) break;
   }
   return streak;
@@ -1534,7 +1593,7 @@ function uniqueDays(entries) {
 
 function calcThisWeekDays() {
   const {start,end} = getWeekBounds(0);
-  const s=start.toISOString().split('T')[0], e=end.toISOString().split('T')[0];
+  const s=toDateStr(start), e=toDateStr(end);
   return uniqueDays(loadData().filter(x=>x.date>=s&&x.date<=e));
 }
 
