@@ -311,5 +311,17 @@
     "createdAt": "2026-05-10",
     "completedAt": null,
     "progress": []
+  },
+  {
+    "id": "mp03rev2t7h9",
+    "title": "Agent App Case Study",
+    "cat": "Portfolio Building",
+    "goalId": null,
+    "stage": "backlog",
+    "targetHrs": null,
+    "level": 1,
+    "createdAt": "2026-05-10",
+    "completedAt": null,
+    "progress": []
   }
 ]
