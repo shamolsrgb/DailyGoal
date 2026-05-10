@@ -1,5 +1,22 @@
 [
   {
+    "id": 1778435489701,
+    "date": "2026-05-10",
+    "goals": [
+      {
+        "goalId": null,
+        "hours": 0.25,
+        "visionId": "mp02cldjjv1w"
+      }
+    ],
+    "totalHours": 0.25,
+    "notes": "",
+    "success": false,
+    "nextAction": "Initial start, not too much progress",
+    "mood": 3,
+    "createdAt": "2026-05-10T17:51:29.701Z"
+  },
+  {
     "id": 1778350975219,
     "date": "2026-05-09",
     "goals": [
