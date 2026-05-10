@@ -323,5 +323,17 @@
     "createdAt": "2026-05-10",
     "completedAt": null,
     "progress": []
+  },
+  {
+    "id": "mp03s4ay4nmz",
+    "title": "Others Projects Case Study",
+    "cat": "Portfolio Building",
+    "goalId": null,
+    "stage": "backlog",
+    "targetHrs": null,
+    "level": 1,
+    "createdAt": "2026-05-10",
+    "completedAt": null,
+    "progress": []
   }
 ]
