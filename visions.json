@@ -9,16 +9,5 @@
     "createdAt": "2026-05-10",
     "completedAt": null,
     "progress": []
-  },
-  {
-    "id": "mozzr2lfry3m",
-    "title": "test 2",
-    "goalId": 3,
-    "stage": "backlog",
-    "targetHrs": null,
-    "level": 1,
-    "createdAt": "2026-05-10",
-    "completedAt": null,
-    "progress": []
   }
 ]
