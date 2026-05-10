@@ -98,27 +98,16 @@
     font-size: 14px; display: flex; align-items: center; justify-content: center;
   }
 
-  /* GOAL SELECTOR */
-  .goal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px; }
+  /* CATEGORY SELECTOR */
+  .goal-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
   .goal-chip {
-    padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border);
-    cursor: pointer; font-size: 12px; transition: all .15s; background: var(--surface2);
-    display: flex; align-items: flex-start; gap: 8px;
+    padding: 10px 6px; border-radius: 8px; border: 1px solid var(--border);
+    cursor: pointer; text-align: center; transition: all .15s; background: var(--surface2);
   }
-  .goal-chip input[type=checkbox] { margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
   .goal-chip:hover { border-color: var(--accent); }
-  .goal-chip.selected { border-color: var(--accent); background: rgba(108,99,255,.12); }
-  .goal-chip .goal-name { font-size: 12px; font-weight: 600; line-height: 1.4; color: var(--text); }
-  .goal-chip .goal-meta { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .goal-chip.selected { border-color: var(--accent); background: rgba(108,99,255,.15); }
+  .goal-chip .goal-name { font-size: 11px; font-weight: 600; color: var(--text); line-height: 1.4; }
 
-  /* HOURS INPUTS for selected goals */
-  #hours-inputs .hour-row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 12px; background: var(--surface2); border-radius: 8px;
-    border: 1px solid var(--border); margin-bottom: 8px;
-  }
-  #hours-inputs .hour-row label { margin: 0; flex: 1; font-size: 12px; color: var(--text); }
-  #hours-inputs .hour-row input { width: 80px; flex-shrink: 0; }
 
   /* MOOD */
   .mood-row { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -269,6 +258,8 @@
   .vb-prog-pct { font-size: 12px; font-weight: 700; color: var(--accent); width: 36px; flex-shrink: 0; }
   .vb-prog-comment { flex: 1; font-size: 12px; color: var(--text); line-height: 1.5; }
   .vb-prog-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .vb-icon-btn { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 11px; padding: 2px 4px; border-radius: 4px; flex-shrink: 0; }
+  .vb-icon-btn:hover { color: var(--red); }
   /* Add progress form */
   .vb-prog-form { margin-top: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
   .vb-prog-form textarea { width: 100%; padding: 8px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-size: 12px; font-family: var(--font); resize: vertical; min-height: 60px; outline: none; margin-bottom: 10px; display: block; }
@@ -291,10 +282,20 @@
   #cv-modal { background:var(--surface); border:1px solid var(--border); border-radius:16px; width:100%; max-width:480px; padding:24px; }
   #cv-modal h2 { font-size:16px; font-weight:700; margin-bottom:20px; }
   /* Vision selection in check-in */
-  .vision-row { display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--surface2); border-radius:8px; border:1px solid var(--border); margin-bottom:8px; }
-  .vision-row label { margin:0; flex:1; font-size:12px; color:var(--text); }
-  .vision-row select { width:180px; flex-shrink:0; padding:6px 8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:12px; outline:none; }
+  .vision-row { padding:10px 12px; background:var(--surface2); border-radius:8px; border:1px solid var(--border); margin-bottom:8px; }
+  .vision-row-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .vision-row-header label { margin:0; flex:1; font-size:12px; font-weight:600; color:var(--text); }
+  .vision-row select { width:190px; flex-shrink:0; padding:6px 8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:12px; outline:none; }
   .vision-row select:focus { border-color:var(--accent); }
+  .vision-row textarea { width:100%; padding:6px 8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:12px; font-family:var(--font); resize:vertical; min-height:50px; outline:none; display:block; box-sizing:border-box; margin-bottom:6px; }
+  .vision-row textarea:focus { border-color:var(--accent); }
+  .vision-row-fields { display:flex; gap:10px; margin-bottom:6px; }
+  .vision-row-fields > div { display:flex; align-items:center; gap:6px; }
+  .vision-row-fields label { font-size:11px; color:var(--muted); white-space:nowrap; margin:0; }
+  .vision-row-fields input { padding:4px 8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:12px; outline:none; }
+  .vision-row-fields input:focus { border-color:var(--accent); }
+  .vision-row-fields .f-hrs { width:65px; }
+  .vision-row-fields .f-pct { width:65px; }
   .vision-warn { font-size:11px; color:var(--red); padding:4px 0; }
 
   /* GOAL DETAILS MODAL */
@@ -500,17 +501,12 @@
     </div>
 
     <div class="form-row">
-      <label>Which goals did you work on? <span style="color:var(--muted)">(select all that apply)</span></label>
+      <label>Which category did you work on today?</label>
       <div class="goal-grid" id="goal-selector"></div>
     </div>
 
-    <div class="form-row" id="hours-section" style="display:none">
-      <label>Hours spent per goal</label>
-      <div id="hours-inputs"></div>
-    </div>
-
     <div class="form-row" id="vision-section" style="display:none">
-      <label>Vision worked on <span style="color:var(--red)">*</span></label>
+      <label>Vision & Progress <span style="color:var(--red)">*</span></label>
       <div id="vision-inputs"></div>
     </div>
 
@@ -558,8 +554,13 @@
   <div class="stats-grid" id="weekly-stats"></div>
 
   <div class="card">
-    <h2>Hours by Goal</h2>
+    <h2>Hours by Category</h2>
     <div id="weekly-goals"></div>
+  </div>
+
+  <div class="card">
+    <h2>Hours by Vision</h2>
+    <div id="weekly-visions"></div>
   </div>
 
   <div class="card">
@@ -579,8 +580,13 @@
   <div class="stats-grid" id="monthly-stats"></div>
 
   <div class="card">
-    <h2>Goal Progress This Month</h2>
+    <h2>Hours by Category</h2>
     <div id="monthly-goals"></div>
+  </div>
+
+  <div class="card">
+    <h2>Hours by Vision</h2>
+    <div id="monthly-visions"></div>
   </div>
 
   <div class="card">
@@ -599,7 +605,7 @@
   </div>
 
   <div class="card">
-    <h2>Goal Completion (All Time Hours)</h2>
+    <h2>Hours by Vision (All Time)</h2>
     <div id="goal-completion"></div>
   </div>
 
@@ -656,9 +662,9 @@
       <input type="text" id="cv-title" placeholder="What do you want to achieve?">
     </div>
     <div class="form-row">
-      <label>Related Goal</label>
+      <label>Category</label>
       <select id="cv-goal">
-        <option value="">— Select a goal —</option>
+        <option value="">— Select category —</option>
       </select>
     </div>
     <div class="form-row">
@@ -992,36 +998,38 @@ function checkPass() {
 
 // ─── GOALS DATA ───────────────────────────────────────────────
 const GOALS = [
-  { id:1,  name:'Financial Tracking Project', targetHrs: 36,  cat:'Build' },
-  { id:2,  name:'Tax Calculator Project',     targetHrs: 36,  cat:'Build' },
-  { id:3,  name:'AI Vibe Coding — Learn',     targetHrs: 64,  cat:'Learn' },
+  { id:1,  name:'Financial Tracking Project', targetHrs: 36,  cat:'Project Building' },
+  { id:2,  name:'Tax Calculator Project',     targetHrs: 36,  cat:'Project Building' },
+  { id:3,  name:'AI Vibe Coding — Learn',     targetHrs: 64,  cat:'Skill Learning' },
   { id:4,  name:'Self Evaluation Work',       targetHrs: 8,   cat:'Career' },
   { id:5,  name:'Portfolio Website',          targetHrs: 80,  cat:'Portfolio Building' },
   { id:6,  name:'Case Study Writing (3)',     targetHrs: 48,  cat:'Portfolio Building' },
   { id:7,  name:"Wife's Upwork Profile",      targetHrs: 32,  cat:'Career' },
   { id:8,  name:'Personal Journal Tracking',  targetHrs: 32,  cat:'Organize' },
   { id:9,  name:'Language — IELTS',           targetHrs: 130, cat:'Language Learning' },
-  { id:10, name:'Spine Integration / Framer', targetHrs: 48,  cat:'Learn' },
-  { id:11, name:'Advanced UI Animation',      targetHrs: 64,  cat:'Learn' },
+  { id:10, name:'Spine Integration / Framer', targetHrs: 48,  cat:'Skill Learning' },
+  { id:11, name:'Advanced UI Animation',      targetHrs: 64,  cat:'Skill Learning' },
   { id:12, name:'Toptal Onboarding',          targetHrs: 24,  cat:'Career' },
-  { id:13, name:'3D Presentation / AE Reel',  targetHrs: 100, cat:'Learn' },
-  { id:14, name:'Blender / C4D Assets',       targetHrs: 96,  cat:'Learn' },
+  { id:13, name:'3D Presentation / AE Reel',  targetHrs: 100, cat:'Skill Learning' },
+  { id:14, name:'Blender / C4D Assets',       targetHrs: 96,  cat:'Skill Learning' },
   { id:15, name:'Reallocation Plan',           targetHrs: 20,  cat:'Career' },
   { id:16, name:'Language — Japan',            targetHrs: 130, cat:'Language Learning' },
   { id:17, name:'Job Market Research',         targetHrs: 40,  cat:'Career' },
   { id:18, name:'Job Apply',                   targetHrs: 30,  cat:'Career' },
   { id:19, name:'Personal Work',               targetHrs: 50,  cat:'Organize' },
   { id:20, name:'Financial Planning & Organize', targetHrs: 24, cat:'Organize' },
-  { id:21, name:'Design Learning',             targetHrs: 80,  cat:'Learn' },
-  { id:22, name:'Figma Plugin Development',    targetHrs: 40,  cat:'Learn' },
+  { id:21, name:'Design Learning',             targetHrs: 80,  cat:'Skill Learning' },
+  { id:22, name:'Figma Plugin Development',    targetHrs: 40,  cat:'Skill Learning' },
   { id:23, name:'Design File Organize',        targetHrs: 16,  cat:'Organize' },
   { id:24, name:'Portfolio Design Work',       targetHrs: 40,  cat:'Portfolio Building' },
 ];
 const MOOD_EMOJI   = { 1:'😴', 2:'😐', 3:'🙂', 4:'😊', 5:'🔥' };
+const CAT_COLORS   = { 'Skill Learning':'#6c63ff','Language Learning':'#4e9eff','Career':'#ffc84a','Project Building':'#43d98c','Portfolio Building':'#ff6584','Organize':'#a78bfa' };
 const WEEKLY_TARGET = 35; // hours per week
 
 // ─── STATE ────────────────────────────────────────────────────
-let selectedGoals   = new Set();
+let selectedCats    = new Set();
+function catKey(cat) { return cat.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
 let currentMood     = null;
 let currentSuccess  = null;
 let editingEntryId  = null;
@@ -1191,84 +1199,67 @@ document.addEventListener('DOMContentLoaded', () => {
 // ─── GOAL SELECTOR ────────────────────────────────────────────
 function buildGoalSelector() {
   const grid = document.getElementById('goal-selector');
-  const catOrder = ['Learn', 'Language Learning', 'Career', 'Build', 'Portfolio Building', 'Organize', 'Write', 'Plan', 'Review'];
-  const grouped = {};
-  GOALS.forEach(g => { (grouped[g.cat] = grouped[g.cat] || []).push(g); });
-  const cats = catOrder.filter(c => grouped[c]);
-  Object.keys(grouped).forEach(c => { if (!cats.includes(c)) cats.push(c); });
+  const catOrder = ['Skill Learning', 'Language Learning', 'Career', 'Project Building', 'Portfolio Building', 'Organize'];
+  const usedCats = catOrder.filter(c => GOALS.some(g => g.cat === c));
+  GOALS.forEach(g => { if (!usedCats.includes(g.cat)) usedCats.push(g.cat); });
 
   grid.style.display = 'flex';
-  grid.style.flexDirection = 'column';
-  grid.style.gap = '16px';
+  grid.style.flexWrap = 'wrap';
+  grid.style.gap = '8px';
 
-  grid.innerHTML = cats.map(cat => `
-    <div>
-      <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border);">${cat}</div>
-      <div class="goal-grid">
-        ${grouped[cat].map(g => `
-          <div class="goal-chip" id="chip-${g.id}" onclick="toggleGoal(${g.id})">
-            <input type="checkbox" id="chk-${g.id}" style="pointer-events:none">
-            <div class="goal-name">${g.name}</div>
-          </div>
-        `).join('')}
-      </div>
+  grid.innerHTML = usedCats.map(cat => `
+    <div class="goal-chip" id="chip-cat-${catKey(cat)}" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')">
+      <div class="goal-name">${cat}</div>
     </div>
   `).join('');
 }
 
-function toggleGoal(id) {
-  if (selectedGoals.has(id)) {
-    selectedGoals.delete(id);
-    document.getElementById('chip-'+id).classList.remove('selected');
-    document.getElementById('chk-'+id).checked = false;
-  } else {
-    selectedGoals.add(id);
-    document.getElementById('chip-'+id).classList.add('selected');
-    document.getElementById('chk-'+id).checked = true;
-  }
+function toggleCat(cat) {
+  if (selectedCats.has(cat)) selectedCats.delete(cat);
+  else selectedCats.add(cat);
+  document.getElementById('chip-cat-'+catKey(cat))?.classList.toggle('selected', selectedCats.has(cat));
   updateHoursSection();
 }
 
 function updateHoursSection() {
-  const section   = document.getElementById('hours-section');
-  const container = document.getElementById('hours-inputs');
   const visSection   = document.getElementById('vision-section');
   const visContainer = document.getElementById('vision-inputs');
 
-  if (selectedGoals.size === 0) {
-    section.style.display = 'none';
+  if (selectedCats.size === 0) {
     visSection.style.display = 'none';
     return;
   }
-  section.style.display = 'block';
-  container.innerHTML = [...selectedGoals].map(id => {
-    const g = GOALS.find(x => x.id === id);
-    return `
-      <div class="hour-row">
-        <label>${g.name}</label>
-        <input type="number" id="hrs-${g.id}" min="0" max="24" step="0.25" value="1" placeholder="hrs">
-      </div>`;
-  }).join('');
 
-  // Vision selection per goal
   visSection.style.display = 'block';
-  visContainer.innerHTML = [...selectedGoals].map(id => {
-    const g = GOALS.find(x => x.id === id);
-    const activeVisions = getActiveVisionsForGoal(id);
-    if (!activeVisions.length) {
+  visContainer.innerHTML = [...selectedCats].map(cat => {
+    const key = catKey(cat);
+    const catVisions = VISIONS_DATA.filter(v => {
+      const vCat = v.cat || GOALS.find(x => x.id === v.goalId)?.cat;
+      return vCat === cat && v.stage !== 'complete';
+    });
+    if (!catVisions.length) {
       return `
         <div class="vision-row">
-          <label>${g.name}</label>
-          <span class="vision-warn">No active vision — <a href="#" onclick="openCreateVision();return false;" style="color:var(--accent)">create one</a></span>
+          <div class="vision-row-header">
+            <label>${escHtml(cat)}</label>
+            <span class="vision-warn">No active vision — <a href="#" onclick="openCreateVision();return false;" style="color:var(--accent)">create one</a></span>
+          </div>
         </div>`;
     }
     return `
       <div class="vision-row">
-        <label>${g.name}</label>
-        <select id="vis-${g.id}">
-          <option value="">— Select vision —</option>
-          ${activeVisions.map(v => `<option value="${v.id}">${escHtml(v.title)}</option>`).join('')}
-        </select>
+        <div class="vision-row-header">
+          <label>${escHtml(cat)}</label>
+          <select id="vis-cat-${key}">
+            <option value="">— Select vision —</option>
+            ${catVisions.map(v => `<option value="${v.id}">${escHtml(v.title)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="vision-row-fields">
+          <div><label>Hours</label><input type="number" class="f-hrs" id="hrs-cat-${key}" min="0" max="24" step="0.25" value="1"></div>
+          <div><label>Add Progress %</label><input type="number" class="f-pct" id="vis-pct-cat-${key}" min="0" max="100" step="1" value="0"></div>
+        </div>
+        <textarea id="vis-comment-cat-${key}" placeholder="What did you accomplish? What did you learn?"></textarea>
       </div>`;
   }).join('');
 }
@@ -1298,19 +1289,24 @@ function openModal(entryId = null) {
   if (entryId !== null) {
     const existing = loadData().find(e => e.id === entryId);
     if (existing) {
-      selectedGoals = new Set(existing.goals.map(g => g.goalId));
+      selectedCats = new Set(existing.goals.map(g => {
+        const goal = GOALS.find(x => x.id === g.goalId);
+        return goal?.cat;
+      }).filter(Boolean));
       document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('selected'));
-      document.querySelectorAll('.goal-chip input[type=checkbox]').forEach(c => c.checked = false);
-      selectedGoals.forEach(id => {
-        document.getElementById('chip-'+id)?.classList.add('selected');
-        const chk = document.getElementById('chk-'+id);
-        if (chk) chk.checked = true;
+      selectedCats.forEach(cat => {
+        document.getElementById('chip-cat-'+catKey(cat))?.classList.add('selected');
       });
       updateHoursSection();
       setTimeout(() => {
         existing.goals.forEach(g => {
-          const inp = document.getElementById('hrs-'+g.goalId);
-          if (inp) inp.value = g.hours;
+          const goal = GOALS.find(x => x.id === g.goalId);
+          if (!goal) return;
+          const key = catKey(goal.cat);
+          const hrs = document.getElementById('hrs-cat-'+key);
+          if (hrs) hrs.value = g.hours;
+          const vis = document.getElementById('vis-cat-'+key);
+          if (vis && g.visionId) vis.value = g.visionId;
         });
       }, 0);
       document.getElementById('ci-notes').value = existing.notes || '';
@@ -1349,9 +1345,11 @@ function updateCheckinPage() {
     document.getElementById('today-summary').style.display = 'block';
     document.getElementById('today-summary-content').innerHTML = todayEntries.map(e => {
       const goalNames = e.goals.map(g => {
-        const go = GOALS.find(x => x.id == g.goalId);
-        return `${go.name} (${g.hours}h)`;
-      }).join(' · ');
+        const vision = VISIONS_DATA.find(v => v.id === g.visionId);
+        const cat = (vision && (vision.cat || GOALS.find(x=>x.id===vision.goalId)?.cat))
+                  || GOALS.find(x=>x.id==g.goalId)?.cat || 'Other';
+        return `${cat} (${g.hours}h)`;
+      }).join(', ');
       return `
         <div style="padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);margin-bottom:8px;">
           <div style="font-size:13px;color:var(--text);margin-bottom:6px;">${goalNames}</div>
@@ -1389,31 +1387,29 @@ async function deleteEntry(id) {
 // ─── SUBMIT ───────────────────────────────────────────────────
 async function submitCheckIn() {
   const date = getBDDate(); // always today (BD time)
-  if (selectedGoals.size === 0) { alert('Please select at least one goal.'); return; }
+  if (selectedCats.size === 0) { alert('Please select at least one category.'); return; }
   if (currentMood === null) { alert('Please set your energy level.'); return; }
   if (currentSuccess === null) { alert('Please mark if today was successful.'); return; }
 
-  // Validate vision selection
-  for (const id of selectedGoals) {
-    const activeVisions = getActiveVisionsForGoal(id);
-    if (!activeVisions.length) {
-      const g = GOALS.find(x => x.id === id);
-      alert(`"${g.name}" has no active vision. Please create one before checking in.`);
-      return;
-    }
-    const sel = document.getElementById('vis-'+id);
-    if (sel && !sel.value) {
-      const g = GOALS.find(x => x.id === id);
-      alert(`Please select a vision for "${g.name}".`);
-      return;
-    }
+  // Validate vision selection and progress comment
+  for (const cat of selectedCats) {
+    const key = catKey(cat);
+    const sel = document.getElementById('vis-cat-'+key);
+    if (!sel || !sel.value) { alert(`Please select a vision for "${cat}".`); return; }
+    const comment = document.getElementById('vis-comment-cat-'+key)?.value.trim() || '';
+    if (!comment) { alert(`Please add a progress comment for "${cat}".`); return; }
   }
 
-  const goalEntries = [...selectedGoals].map(id => ({
-    goalId: id,
-    hours: parseFloat(document.getElementById('hrs-'+id)?.value || 0),
-    visionId: document.getElementById('vis-'+id)?.value || null
-  }));
+  const goalEntries = [...selectedCats].map(cat => {
+    const key = catKey(cat);
+    const visionId = document.getElementById('vis-cat-'+key)?.value || null;
+    const vision = visionId ? getVision(visionId) : null;
+    return {
+      goalId: vision?.goalId || null,
+      hours: parseFloat(document.getElementById('hrs-cat-'+key)?.value || 0),
+      visionId
+    };
+  });
 
   const entry = {
     id: Date.now(),
@@ -1438,6 +1434,29 @@ async function submitCheckIn() {
   entries.sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
   await saveData(entries);
 
+  // Save vision progress entries
+  let visionUpdated = false;
+  for (const cat of selectedCats) {
+    const key = catKey(cat);
+    const visionId = document.getElementById('vis-cat-'+key)?.value;
+    if (!visionId) continue;
+    const comment = document.getElementById('vis-comment-cat-'+key)?.value.trim() || '';
+    const pct = parseInt(document.getElementById('vis-pct-cat-'+key)?.value || 0);
+    if (!comment) continue;
+    const v = getVision(visionId);
+    if (!v) continue;
+    v.progress.push({ id: uid(), comment, pct, date: getBDDate() });
+    if (visionProgress(v) >= 100 && v.stage !== 'complete') {
+      v.stage = 'complete';
+      v.completedAt = getBDDate();
+      showToast('Vision completed! 🎉');
+    }
+    const idx = VISIONS_DATA.findIndex(x => x.id === v.id);
+    if (idx >= 0) VISIONS_DATA[idx] = v;
+    visionUpdated = true;
+  }
+  if (visionUpdated) saveVisionsToGitHub();
+
   closeModal();
   showToast('✓ Check-in saved!');
   updateCheckinPage();
@@ -1448,17 +1467,14 @@ async function submitCheckIn() {
 }
 
 function resetForm() {
-  selectedGoals.clear();
+  selectedCats.clear();
   currentMood = null;
   currentSuccess = null;
   editingEntryId = null;
   document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('selected'));
-  document.querySelectorAll('.goal-chip input[type=checkbox]').forEach(c => c.checked = false);
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
   document.querySelectorAll('.success-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('ci-notes').value = '';
-  document.getElementById('hours-section').style.display = 'none';
-  document.getElementById('hours-inputs').innerHTML = '';
   document.getElementById('vision-inputs').innerHTML = '';
   document.getElementById('vision-section').style.display = 'none';
   document.getElementById('next-action-section').style.display = 'none';
@@ -1513,27 +1529,56 @@ function renderWeekly() {
     </div>
   `;
 
-  // Hours by goal
-  const goalHrs = {};
+  // Hours by category
+  const catHrs = {};
   entries.forEach(e => e.goals.forEach(g => {
-    goalHrs[g.goalId] = (goalHrs[g.goalId]||0) + g.hours;
+    const vision = VISIONS_DATA.find(v => v.id === g.visionId);
+    const cat = (vision && (vision.cat || GOALS.find(x => x.id === vision.goalId)?.cat))
+              || GOALS.find(x => x.id === g.goalId)?.cat || 'Other';
+    catHrs[cat] = (catHrs[cat]||0) + g.hours;
   }));
-  const maxH = Math.max(...Object.values(goalHrs), 1);
+  const maxCatH = Math.max(...Object.values(catHrs), 1);
 
   const wg = document.getElementById('weekly-goals');
-  if (Object.keys(goalHrs).length === 0) {
+  if (Object.keys(catHrs).length === 0) {
     wg.innerHTML = '<div class="empty">No data for this week.</div>';
   } else {
-    wg.innerHTML = Object.entries(goalHrs).sort((a,b)=>b[1]-a[1]).map(([id,hrs]) => {
-      const g = GOALS.find(x=>x.id==id);
-      const pct = (hrs/maxH*100).toFixed(1);
+    wg.innerHTML = Object.entries(catHrs).sort((a,b)=>b[1]-a[1]).map(([cat,hrs]) => {
+      const pct = (hrs/maxCatH*100).toFixed(1);
+      const color = CAT_COLORS[cat] || 'var(--accent)';
       return `
         <div class="prog-row">
           <div class="prog-header">
-            <span class="goal-title">${g.name}</span>
-            <span class="goal-pct">${hrs}h</span>
+            <span class="goal-title">${cat}</span>
+            <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h</span>
           </div>
-          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--accent)"></div></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
+        </div>`;
+    }).join('');
+  }
+
+  // Hours by vision
+  const visionHrs = {};
+  entries.forEach(e => e.goals.forEach(g => {
+    if (g.visionId) visionHrs[g.visionId] = (visionHrs[g.visionId]||0) + g.hours;
+  }));
+  const maxVH = Math.max(...Object.values(visionHrs), 1);
+  const wv = document.getElementById('weekly-visions');
+  if (Object.keys(visionHrs).length === 0) {
+    wv.innerHTML = '<div class="empty">No vision data for this week.</div>';
+  } else {
+    wv.innerHTML = Object.entries(visionHrs).sort((a,b)=>b[1]-a[1]).map(([vid,hrs]) => {
+      const v = VISIONS_DATA.find(x => x.id === vid);
+      const vCat = v ? (v.cat || GOALS.find(x => x.id === v.goalId)?.cat || '') : '';
+      const color = CAT_COLORS[vCat] || 'var(--accent)';
+      const pct = (hrs/maxVH*100).toFixed(1);
+      return `
+        <div class="prog-row">
+          <div class="prog-header">
+            <span class="goal-title">${v ? escHtml(v.title) : 'Unknown'}</span>
+            <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
         </div>`;
     }).join('');
   }
@@ -1564,9 +1609,12 @@ function renderWeekly() {
     const dayMood = Math.round(dayEntries.reduce((s,e) => s + e.mood, 0) / dayEntries.length);
     const daySuccess = dayEntries.every(e => e.success);
     const goalTags = Object.entries(goalMap).map(([id,hrs]) => {
-      const go = GOALS.find(x => x.id == id);
-      const name = go.name.length > 20 ? go.name.slice(0,18) + '…' : go.name;
-      return `<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 7px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:11px;">${name} <strong>${hrs}h</strong></span>`;
+      const entry = entries.flatMap(e=>e.goals).find(g=>g.goalId==id);
+      const vision = entry?.visionId ? VISIONS_DATA.find(v=>v.id===entry.visionId) : null;
+      const cat = (vision && (vision.cat || GOALS.find(x=>x.id===vision.goalId)?.cat))
+                || GOALS.find(x=>x.id==id)?.cat || 'Other';
+      const color = CAT_COLORS[cat] || 'var(--accent)';
+      return `<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 7px;background:var(--surface2);border:1px solid ${color};border-radius:10px;font-size:11px;color:${color}">${cat} <strong>${hrs}h</strong></span>`;
     }).join('');
     return `
       <div style="padding:8px 0;border-bottom:1px solid var(--border);">
@@ -1623,26 +1671,56 @@ function renderMonthly() {
     </div>
   `;
 
-  // Goal progress this month
-  const goalHrs = {};
+  // Hours by category this month
+  const catHrs = {};
   entries.forEach(e => e.goals.forEach(g => {
-    goalHrs[g.goalId] = (goalHrs[g.goalId]||0)+g.hours;
+    const vision = VISIONS_DATA.find(v => v.id === g.visionId);
+    const cat = (vision && (vision.cat || GOALS.find(x => x.id === vision.goalId)?.cat))
+              || GOALS.find(x => x.id === g.goalId)?.cat || 'Other';
+    catHrs[cat] = (catHrs[cat]||0) + g.hours;
   }));
+  const maxCatH = Math.max(...Object.values(catHrs), 1);
 
   const mg = document.getElementById('monthly-goals');
-  if (Object.keys(goalHrs).length === 0) {
+  if (Object.keys(catHrs).length === 0) {
     mg.innerHTML = '<div class="empty">No data this month.</div>';
   } else {
-    mg.innerHTML = Object.entries(goalHrs).sort((a,b)=>b[1]-a[1]).map(([id,hrs]) => {
-      const g = GOALS.find(x=>x.id==id);
-      const pct = Math.min(100, (hrs/g.targetHrs*100)).toFixed(1);
+    mg.innerHTML = Object.entries(catHrs).sort((a,b)=>b[1]-a[1]).map(([cat,hrs]) => {
+      const pct = (hrs/maxCatH*100).toFixed(1);
+      const color = CAT_COLORS[cat] || 'var(--accent)';
       return `
         <div class="prog-row">
           <div class="prog-header">
-            <span class="goal-title">${g.name}</span>
-            <span class="goal-pct">${hrs}h / ${g.targetHrs}h (${pct}%)</span>
+            <span class="goal-title">${cat}</span>
+            <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h</span>
           </div>
-          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--accent)"></div></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
+        </div>`;
+    }).join('');
+  }
+
+  // Hours by vision this month
+  const visionHrs = {};
+  entries.forEach(e => e.goals.forEach(g => {
+    if (g.visionId) visionHrs[g.visionId] = (visionHrs[g.visionId]||0) + g.hours;
+  }));
+  const maxVH = Math.max(...Object.values(visionHrs), 1);
+  const mv = document.getElementById('monthly-visions');
+  if (Object.keys(visionHrs).length === 0) {
+    mv.innerHTML = '<div class="empty">No vision data this month.</div>';
+  } else {
+    mv.innerHTML = Object.entries(visionHrs).sort((a,b)=>b[1]-a[1]).map(([vid,hrs]) => {
+      const v = VISIONS_DATA.find(x => x.id === vid);
+      const vCat = v ? (v.cat || GOALS.find(x => x.id === v.goalId)?.cat || '') : '';
+      const color = CAT_COLORS[vCat] || 'var(--accent)';
+      const pct = (hrs/maxVH*100).toFixed(1);
+      return `
+        <div class="prog-row">
+          <div class="prog-header">
+            <span class="goal-title">${v ? escHtml(v.title) : 'Unknown'}</span>
+            <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
         </div>`;
     }).join('');
   }
@@ -1702,23 +1780,20 @@ function renderOverview() {
   // Category breakdown
   const catHrs = {};
   entries.forEach(e => e.goals.forEach(g => {
-    const goal = GOALS.find(x => x.id == g.goalId);
-    if (goal) catHrs[goal.cat] = (catHrs[goal.cat] || 0) + g.hours;
+    const vision = VISIONS_DATA.find(v => v.id === g.visionId);
+    const cat = (vision && (vision.cat || GOALS.find(x => x.id === vision.goalId)?.cat))
+              || GOALS.find(x => x.id === g.goalId)?.cat || 'Other';
+    catHrs[cat] = (catHrs[cat] || 0) + g.hours;
   }));
   const catTotal = Object.values(catHrs).reduce((s, h) => s + h, 0);
-  const catOrder = ['Learn', 'Language Learning', 'Career', 'Build', 'Portfolio Building', 'Organize', 'Write', 'Plan', 'Review'];
+  const catOrder = ['Skill Learning', 'Language Learning', 'Career', 'Project Building', 'Portfolio Building', 'Organize'];
   const cats = catOrder.filter(c => catHrs[c]);
   Object.keys(catHrs).forEach(c => { if (!cats.includes(c)) cats.push(c); });
-  const catColors = {
-    'Learn': '#6c63ff', 'Language Learning': '#4e9eff', 'Career': '#ffc84a',
-    'Build': '#43d98c', 'Portfolio Building': '#ff6584', 'Organize': '#a78bfa',
-    'Write': '#34d399', 'Plan': '#fb923c', 'Review': '#94a3b8'
-  };
   document.getElementById('cat-breakdown').innerHTML = cats.length
     ? cats.map(cat => {
         const hrs = catHrs[cat];
         const pct = catTotal > 0 ? (hrs / catTotal * 100).toFixed(1) : 0;
-        const color = catColors[cat] || 'var(--accent)';
+        const color = CAT_COLORS[cat] || 'var(--accent)';
         return `
           <div class="prog-row">
             <div class="prog-header">
@@ -1730,27 +1805,28 @@ function renderOverview() {
       }).join('')
     : '<div class="empty">No hours logged yet.</div>';
 
-  // Goal completion all time
-  const goalHrsAll = {};
+  // Hours by vision all time
+  const visionHrsAll = {};
   entries.forEach(e => e.goals.forEach(g => {
-    goalHrsAll[g.goalId] = (goalHrsAll[g.goalId]||0)+g.hours;
+    if (g.visionId) visionHrsAll[g.visionId] = (visionHrsAll[g.visionId]||0) + g.hours;
   }));
-  const activeGoals = GOALS.filter(g => (goalHrsAll[g.id] || 0) > 0);
-  document.getElementById('goal-completion').innerHTML = activeGoals.length
-    ? activeGoals.map(g => {
-        const hrs = goalHrsAll[g.id];
-        const pct = Math.min(100, (hrs/g.targetHrs*100)).toFixed(1);
-        const color = pct >= 100 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--muted)';
+  const maxVAll = Math.max(...Object.values(visionHrsAll), 1);
+  document.getElementById('goal-completion').innerHTML = Object.keys(visionHrsAll).length
+    ? Object.entries(visionHrsAll).sort((a,b)=>b[1]-a[1]).map(([vid,hrs]) => {
+        const v = VISIONS_DATA.find(x => x.id === vid);
+        const vCat = v ? (v.cat || GOALS.find(x => x.id === v.goalId)?.cat || '') : '';
+        const color = CAT_COLORS[vCat] || 'var(--accent)';
+        const pct = (hrs/maxVAll*100).toFixed(1);
         return `
           <div class="prog-row">
             <div class="prog-header">
-              <span class="goal-title">${g.name}</span>
-              <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h / ${g.targetHrs}h (${pct}%)</span>
+              <span class="goal-title">${v ? escHtml(v.title) : 'Unknown'}</span>
+              <span class="goal-pct" style="color:${color}">${hrs.toFixed(1)}h</span>
             </div>
-            <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--accent)"></div></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
           </div>`;
       }).join('')
-    : '<div class="empty">No hours logged yet.</div>';
+    : '<div class="empty">No vision hours logged yet.</div>';
 
   // Streaks
   document.getElementById('streaks').innerHTML = `
@@ -1824,8 +1900,10 @@ function renderLog() {
 
   tbody.innerHTML = pageEntries.map(e => {
     const goalNames = e.goals.map(g=>{
-      const go=GOALS.find(x=>x.id==g.goalId);
-      return `G${String(go.id).padStart(2,'0')} (${g.hours}h)`;
+      const vision = VISIONS_DATA.find(v => v.id === g.visionId);
+      const cat = (vision && (vision.cat || GOALS.find(x=>x.id===vision.goalId)?.cat))
+                || GOALS.find(x=>x.id==g.goalId)?.cat || 'Other';
+      return cat;
     }).join(', ');
     return `
       <tr>
@@ -1897,7 +1975,6 @@ function formatDateShort(d) {
 
 // ─── VISION BOARD ─────────────────────────────────────────────
 let expandedVisions = new Set();
-let showProgressForm = new Set();
 
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -1915,7 +1992,7 @@ function visionHoursLogged(visionId) {
 
 function visionProgress(v) {
   if (!v.progress.length) return 0;
-  return v.progress[v.progress.length - 1].pct;
+  return Math.min(100, v.progress.reduce((sum, p) => sum + p.pct, 0));
 }
 
 function renderGoals() {
@@ -1942,9 +2019,8 @@ function renderGoals() {
 }
 
 function renderVisionCard(v) {
-  const goal     = GOALS.find(g => g.id === v.goalId);
+  const vCat     = v.cat || GOALS.find(g => g.id === v.goalId)?.cat || '';
   const isOpen   = expandedVisions.has(v.id);
-  const showForm = showProgressForm.has(v.id);
   const pct      = visionProgress(v);
   const hrs      = visionHoursLogged(v.id);
   const barColor = pct >= 100 ? 'var(--green)' : pct >= 50 ? 'var(--accent)' : '#4e9eff';
@@ -1952,24 +2028,10 @@ function renderVisionCard(v) {
   const progressLog = v.progress.slice().reverse().map(p => `
     <div class="vb-prog-entry">
       <span class="vb-prog-pct">${p.pct}%</span>
-      <span class="vb-prog-comment">${escHtml(p.comment)}</span>
+      <span class="vb-prog-comment">${escHtml(p.comment || '—')}</span>
       <span class="vb-prog-date">${p.date}</span>
+      <button class="vb-icon-btn" onclick="deleteProgress('${v.id}','${p.id}')" title="Delete">✕</button>
     </div>`).join('') || '<div style="font-size:12px;color:var(--muted);padding:4px 0;">No progress updates yet.</div>';
-
-  const progFormHtml = showForm ? `
-    <div class="vb-prog-form">
-      <textarea id="vpf-comment-${v.id}" placeholder="What did you accomplish? What did you learn?"></textarea>
-      <div class="vb-pct-row">
-        <label>Progress</label>
-        <input type="range" id="vpf-pct-${v.id}" min="0" max="100" step="5" value="${pct}"
-          oninput="document.getElementById('vpf-val-${v.id}').textContent=this.value+'%'">
-        <span class="vb-pct-val" id="vpf-val-${v.id}">${pct}%</span>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button class="vb-act-btn primary" onclick="submitProgress('${v.id}')">Save Progress</button>
-        <button class="vb-act-btn" onclick="toggleProgressForm('${v.id}')">Cancel</button>
-      </div>
-    </div>` : '';
 
   // Promotion button — strict one-way: Backlog → Upcoming → Primary (locked)
   const primaryCount  = VISIONS_DATA.filter(x => x.stage === 'vision').length;
@@ -1998,7 +2060,7 @@ function renderVisionCard(v) {
           <span class="vb-level-badge">Lv ${v.level}</span>
         </div>
         <div class="vb-card-meta">
-          ${goal ? `<span class="vb-goal-badge">${escHtml(goal.name)}</span>` : ''}
+          ${vCat ? `<span class="vb-goal-badge">${escHtml(vCat)}</span>` : ''}
           <span class="vb-time-tag">${hrs.toFixed(1)}h logged${v.targetHrs ? ' / '+v.targetHrs+'h target' : ''}</span>
         </div>
         <div class="vb-pbar-wrap">
@@ -2010,8 +2072,6 @@ function renderVisionCard(v) {
       </div>
       <div class="vb-card-body ${isOpen ? 'open' : ''}">
         <div style="margin-bottom:12px;">${progressLog}</div>
-        ${v.stage !== 'complete' ? `<button class="vb-act-btn primary" onclick="toggleProgressForm('${v.id}')">+ Add Progress</button>` : ''}
-        ${progFormHtml}
         <div class="vb-actions">
           ${moveBtns}
           ${levelUpBtn}
@@ -2028,13 +2088,6 @@ function toggleVisionCard(id) {
   reRenderVisionCard(id);
 }
 
-function toggleProgressForm(id) {
-  if (showProgressForm.has(id)) showProgressForm.delete(id);
-  else { showProgressForm.add(id); expandedVisions.add(id); }
-  reRenderVisionCard(id);
-  if (showProgressForm.has(id)) setTimeout(() => document.getElementById('vpf-comment-'+id)?.focus(), 0);
-}
-
 function reRenderVisionCard(id) {
   const v = getVision(id);
   if (!v) return;
@@ -2042,19 +2095,10 @@ function reRenderVisionCard(id) {
   if (card) card.outerHTML = renderVisionCard(v);
 }
 
-function submitProgress(visionId) {
-  const comment = document.getElementById('vpf-comment-'+visionId)?.value.trim() || '';
-  const pct     = parseInt(document.getElementById('vpf-pct-'+visionId)?.value || 0);
-  if (!comment) { alert('Please add a comment about your progress.'); return; }
+function deleteProgress(visionId, progressId) {
   const v = getVision(visionId);
   if (!v) return;
-  v.progress.push({ id: uid(), comment, pct, date: getBDDate() });
-  if (pct >= 100 && v.stage !== 'complete') {
-    v.stage = 'complete';
-    v.completedAt = getBDDate();
-    showToast('Vision completed! 🎉');
-  }
-  showProgressForm.delete(visionId);
+  v.progress = v.progress.filter(p => p.id !== progressId);
   expandedVisions.add(visionId);
   saveVision(v);
   renderGoals();
@@ -2103,8 +2147,12 @@ function openCreateVision(visionId = null) {
   editingVisionId = visionId;
   const v = visionId ? getVision(visionId) : null;
   const sel = document.getElementById('cv-goal');
-  sel.innerHTML = '<option value="">— Select a goal —</option>' +
-    GOALS.map(g => `<option value="${g.id}" ${v && v.goalId === g.id ? 'selected' : ''}>${escHtml(g.name)}</option>`).join('');
+  const catOrder = ['Skill Learning','Language Learning','Career','Project Building','Portfolio Building','Organize'];
+  const usedCats = catOrder.filter(c => GOALS.some(g => g.cat === c));
+  GOALS.forEach(g => { if (!usedCats.includes(g.cat)) usedCats.push(g.cat); });
+  const currentCat = v ? (v.cat || GOALS.find(x => x.id === v.goalId)?.cat || '') : '';
+  sel.innerHTML = '<option value="">— Select category —</option>' +
+    usedCats.map(cat => `<option value="${cat}" ${currentCat === cat ? 'selected' : ''}>${escHtml(cat)}</option>`).join('');
   document.getElementById('cv-title').value  = v ? v.title : '';
   document.getElementById('cv-target').value = v && v.targetHrs ? v.targetHrs : '';
   const stageRow = document.getElementById('cv-stage-row');
@@ -2127,19 +2175,19 @@ function handleCVOverlay(e) { if (e.target === document.getElementById('cv-overl
 
 function submitCreateVision() {
   const title     = document.getElementById('cv-title').value.trim();
-  const goalId    = parseInt(document.getElementById('cv-goal').value);
+  const cat       = document.getElementById('cv-goal').value;
   const targetHrs = parseFloat(document.getElementById('cv-target').value) || null;
-  if (!title)  { alert('Please enter a vision title.'); return; }
-  if (!goalId) { alert('Please select a related goal.'); return; }
+  if (!title) { alert('Please enter a vision title.'); return; }
+  if (!cat)   { alert('Please select a category.'); return; }
 
   if (editingVisionId) {
     const v = getVision(editingVisionId);
-    if (v) { v.title = title; v.goalId = goalId; v.targetHrs = targetHrs; saveVision(v); }
+    if (v) { v.title = title; v.cat = cat; v.goalId = null; v.targetHrs = targetHrs; saveVision(v); }
     closeCreateVision();
     renderGoals();
     showToast('Vision updated!');
   } else {
-    const v = { id: uid(), title, goalId, stage: 'backlog', targetHrs, level: 1, createdAt: getBDDate(), completedAt: null, progress: [] };
+    const v = { id: uid(), title, cat, goalId: null, stage: 'backlog', targetHrs, level: 1, createdAt: getBDDate(), completedAt: null, progress: [] };
     VISIONS_DATA.push(v);
     saveVisionsToGitHub();
     closeCreateVision();
