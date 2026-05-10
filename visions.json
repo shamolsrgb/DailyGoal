@@ -9,23 +9,5 @@
     "createdAt": "2026-05-10",
     "completedAt": null,
     "progress": []
-  },
-  {
-    "id": "mp00c74baz4j",
-    "title": "test",
-    "goalId": 1,
-    "stage": "backlog",
-    "targetHrs": null,
-    "level": 1,
-    "createdAt": "2026-05-10",
-    "completedAt": null,
-    "progress": [
-      {
-        "id": "mp00lqf9rhdv",
-        "comment": "ljljn",
-        "pct": 2,
-        "date": "2026-05-10"
-      }
-    ]
   }
 ]
