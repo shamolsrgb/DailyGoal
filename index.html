@@ -1305,7 +1305,6 @@ function openModal(entryId = null) {
           if (vis && g.visionId) vis.value = g.visionId;
         });
       }, 0);
-      document.getElementById('ci-notes').value = existing.notes || '';
       setSuccess(existing.success);
       document.getElementById('ci-next-action').value = existing.nextAction || '';
       setMood(existing.mood);
@@ -1412,7 +1411,7 @@ async function submitCheckIn() {
     date,
     goals: goalEntries,
     totalHours: goalEntries.reduce((s,g) => s + g.hours, 0),
-    notes: document.getElementById('ci-notes').value.trim(),
+    notes: '',
     success: currentSuccess,
     nextAction: currentSuccess ? '' : document.getElementById('ci-next-action').value.trim(),
     mood: currentMood,
@@ -1470,7 +1469,6 @@ function resetForm() {
   document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('selected'));
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
   document.querySelectorAll('.success-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('ci-notes').value = '';
   document.getElementById('vision-inputs').innerHTML = '';
   document.getElementById('vision-section').style.display = 'none';
   document.getElementById('next-action-section').style.display = 'none';
