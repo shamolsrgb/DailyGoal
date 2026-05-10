@@ -1,5 +1,21 @@
 [
   {
+    "id": 1778426965661,
+    "date": "2026-05-10",
+    "goals": [
+      {
+        "goalId": 22,
+        "hours": 0.25
+      }
+    ],
+    "totalHours": 0.25,
+    "notes": "Start understanding about Figma Plugin Development",
+    "success": false,
+    "nextAction": "Initial start, not too much progress",
+    "mood": 2,
+    "createdAt": "2026-05-10T15:29:25.661Z"
+  },
+  {
     "id": 1778350975219,
     "date": "2026-05-09",
     "goals": [
