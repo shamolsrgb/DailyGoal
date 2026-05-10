@@ -57,5 +57,17 @@
     "createdAt": "2026-05-10",
     "completedAt": null,
     "progress": []
+  },
+  {
+    "id": "mp02c4aruswp",
+    "title": "Blander & C4D For Making 3d Assets",
+    "cat": "Skill Learning",
+    "goalId": null,
+    "stage": "backlog",
+    "targetHrs": null,
+    "level": 1,
+    "createdAt": "2026-05-10",
+    "completedAt": null,
+    "progress": []
   }
 ]
