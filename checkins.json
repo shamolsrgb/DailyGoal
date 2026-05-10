@@ -1,21 +1,5 @@
 [
   {
-    "id": 1778426993803,
-    "date": "2026-05-10",
-    "goals": [
-      {
-        "goalId": 8,
-        "hours": 0.5
-      }
-    ],
-    "totalHours": 0.5,
-    "notes": "Bug fixing and organize",
-    "success": true,
-    "nextAction": "",
-    "mood": 3,
-    "createdAt": "2026-05-10T15:29:53.803Z"
-  },
-  {
     "id": 1778426965661,
     "date": "2026-05-10",
     "goals": [
