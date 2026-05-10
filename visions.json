@@ -3,18 +3,22 @@
     "id": "mozz75prahl0",
     "title": "Goal Tracking Portal",
     "goalId": 8,
-    "stage": "complete",
+    "stage": "vision",
     "targetHrs": null,
     "level": 1,
     "createdAt": "2026-05-10",
-    "completedAt": "2026-05-10",
-    "progress": [
-      {
-        "id": "mp007rqqivng",
-        "comment": "Already done initial structure and start using it. it was done by 9 May",
-        "pct": 100,
-        "date": "2026-05-10"
-      }
-    ]
+    "completedAt": null,
+    "progress": []
+  },
+  {
+    "id": "mp00c74baz4j",
+    "title": "test",
+    "goalId": 1,
+    "stage": "backlog",
+    "targetHrs": null,
+    "level": 1,
+    "createdAt": "2026-05-10",
+    "completedAt": null,
+    "progress": []
   }
 ]
