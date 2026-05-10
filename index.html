@@ -1809,7 +1809,7 @@ function calcThisMonthDays() {
 
 // ─── LOG ──────────────────────────────────────────────────────
 function renderLog() {
-  const allEntries = loadData().slice().reverse(); // newest first
+  const allEntries = loadData(); // already sorted newest first
   const tbody = document.getElementById('log-body');
   if (!allEntries.length) {
     tbody.innerHTML = '<tr><td colspan="6" class="empty">No check-ins yet. Start your first one!</td></tr>';
