@@ -130,7 +130,14 @@
     "level": 1,
     "createdAt": "2026-05-10",
     "completedAt": null,
-    "progress": []
+    "progress": [
+      {
+        "id": "mp7vantv1wru",
+        "comment": "I created a 7-level framework for analytical problem-solving skills with the help of Claude. I recently attempted a Level 1 problem-solving assessment and scored 5.5 out of 10. Through this self-evaluation, I identified a key gap in my understanding of UX laws and principles.\n\nFor now, I’ve decided to focus on strengthening my UX law knowledge first. After improving in this area, I plan to return to the self-evaluation process and continue assessing my analytical problem-solving growth.",
+        "pct": 0,
+        "date": "2026-05-16"
+      }
+    ]
   },
   {
     "id": "mp02e79zsetx",
