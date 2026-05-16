@@ -1,5 +1,22 @@
 [
   {
+    "id": 1778952953897,
+    "date": "2026-05-16",
+    "goals": [
+      {
+        "goalId": null,
+        "hours": 0.5,
+        "visionId": "mp02dsvqixzj"
+      }
+    ],
+    "totalHours": 0.5,
+    "notes": "",
+    "success": false,
+    "nextAction": "Need to invest more time to learn the UX law properly",
+    "mood": 3,
+    "createdAt": "2026-05-16T17:35:53.897Z"
+  },
+  {
     "id": 1778906995653,
     "date": "2026-05-16",
     "goals": [
