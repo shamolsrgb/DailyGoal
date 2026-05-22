@@ -191,7 +191,14 @@
     "level": 1,
     "createdAt": "2026-05-10",
     "completedAt": null,
-    "progress": []
+    "progress": [
+      {
+        "id": "mpgpseuie9bz",
+        "comment": "Already build the basic Structure using google AI tool. good progress. Working in Accounts, Transaction, Income, Loans module. Plan is to build this first for myself and then think for public uses. Currenly I backup this in my local. No git upload right now.",
+        "pct": 2,
+        "date": "2026-05-22"
+      }
+    ]
   },
   {
     "id": "mp02fwns8xs1",
