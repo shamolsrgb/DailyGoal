@@ -197,6 +197,12 @@
         "comment": "Already build the basic Structure using google AI tool. good progress. Working in Accounts, Transaction, Income, Loans module. Plan is to build this first for myself and then think for public uses. Currenly I backup this in my local. No git upload right now.",
         "pct": 2,
         "date": "2026-05-22"
+      },
+      {
+        "id": "mph4fr72ze2a",
+        "comment": "Fix lots of things, Transcation input and list showing issue fix, advance filter fix, Configuration added, lots of bug fix.",
+        "pct": 3,
+        "date": "2026-05-22"
       }
     ]
   },
