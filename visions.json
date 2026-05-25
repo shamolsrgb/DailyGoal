@@ -203,6 +203,12 @@
         "comment": "Fix lots of things, Transcation input and list showing issue fix, advance filter fix, Configuration added, lots of bug fix.",
         "pct": 3,
         "date": "2026-05-22"
+      },
+      {
+        "id": "mpl3rcrvxo6q",
+        "comment": "Do lots of micro improvements in configurations, transactions history, account transaction history.",
+        "pct": 5,
+        "date": "2026-05-25"
       }
     ]
   },
