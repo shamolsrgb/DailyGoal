@@ -215,6 +215,12 @@
         "comment": "Just fix some random things, working in loan module for issue fixing",
         "pct": 1,
         "date": "2026-05-25"
+      },
+      {
+        "id": "mps3o3514njc",
+        "comment": "Add credit card module and all funcationality, Credit card EMI create and connect with loan module, Savings Module added with base line functionality, budget planning option added",
+        "pct": 5,
+        "date": "2026-05-30"
       }
     ]
   },
