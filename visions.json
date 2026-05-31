@@ -264,7 +264,14 @@
     "level": 1,
     "createdAt": "2026-05-10",
     "completedAt": null,
-    "progress": []
+    "progress": [
+      {
+        "id": "mptcharvnq2x",
+        "comment": "Start initial project overview but didn't finished. Explore some case studies reference. At first I am grabing whole picture in my mind to what should I plan, write and execute.",
+        "pct": 0,
+        "date": "2026-05-31"
+      }
+    ]
   },
   {
     "id": "mp02hb653u78",
