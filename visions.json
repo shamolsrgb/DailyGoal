@@ -410,5 +410,17 @@
     "createdAt": "2026-05-16",
     "completedAt": null,
     "progress": []
+  },
+  {
+    "id": "mpvmn27oocut",
+    "title": "Masters Program Research",
+    "cat": "Organize",
+    "goalId": null,
+    "stage": "backlog",
+    "targetHrs": null,
+    "level": 1,
+    "createdAt": "2026-06-01",
+    "completedAt": null,
+    "progress": []
   }
 ]
