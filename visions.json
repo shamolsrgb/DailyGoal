@@ -229,10 +229,10 @@
         "date": "2026-05-30"
       },
       {
-        "id": "mpu7k9ppw9wz",
-        "comment": "L1 structure finished. minor bug fixing. working on csv upload and optimization.",
-        "pct": 20,
-        "date": "2026-05-31"
+        "id": "mpvmkj389l0g",
+        "comment": "Fix lots of bugs, CSV upload module, transaction showing issue, labels bug issue, duplicate and missing elements fixing issue. transaction can import successfully. now focus on next is bulk import from image or Statement",
+        "pct": 10,
+        "date": "2026-06-01"
       }
     ]
   },
@@ -410,24 +410,5 @@
     "createdAt": "2026-05-16",
     "completedAt": null,
     "progress": []
-  },
-  {
-    "id": "mpv5g0hsmjay",
-    "title": "Masters Program Research",
-    "cat": "Organize",
-    "goalId": null,
-    "stage": "backlog",
-    "targetHrs": null,
-    "level": 1,
-    "createdAt": "2026-06-01",
-    "completedAt": null,
-    "progress": [
-      {
-        "id": "mpv5jlacaxsj",
-        "comment": "Initial information grab for japan master programs. good initial knowledge grabbed. Now I have to see some YouTube video for further knowledge grab",
-        "pct": 1,
-        "date": "2026-06-01"
-      }
-    ]
   }
 ]
