@@ -421,6 +421,13 @@
     "level": 1,
     "createdAt": "2026-06-01",
     "completedAt": null,
-    "progress": []
+    "progress": [
+      {
+        "id": "mpvmqk4c2ky3",
+        "comment": "I start exploring japan masters program oppurunity, start explorening understanding the basics.",
+        "pct": 1,
+        "date": "2026-06-01"
+      }
+    ]
   }
 ]
