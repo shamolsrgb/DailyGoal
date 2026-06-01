@@ -421,6 +421,13 @@
     "level": 1,
     "createdAt": "2026-06-01",
     "completedAt": null,
-    "progress": []
+    "progress": [
+      {
+        "id": "mpv5jlacaxsj",
+        "comment": "Initial information grab for japan master programs. good initial knowledge grabbed. Now I have to see some YouTube video for further knowledge grab",
+        "pct": 1,
+        "date": "2026-06-01"
+      }
+    ]
   }
 ]
