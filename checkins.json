@@ -1,37 +1,20 @@
 [
   {
-    "id": 1780314930113,
+    "id": 1780343526629,
     "date": "2026-06-01",
     "goals": [
       {
         "goalId": null,
-        "hours": 2,
-        "visionId": "mpv5g0hsmjay"
-      }
-    ],
-    "totalHours": 2,
-    "notes": "",
-    "success": true,
-    "nextAction": "",
-    "mood": 3,
-    "createdAt": "2026-06-01T11:55:30.113Z"
-  },
-  {
-    "id": 1780257855244,
-    "date": "2026-05-31",
-    "goals": [
-      {
-        "goalId": null,
-        "hours": 2.5,
+        "hours": 4,
         "visionId": "mp02fksceifc"
       }
     ],
-    "totalHours": 2.5,
+    "totalHours": 4,
     "notes": "",
     "success": true,
     "nextAction": "",
     "mood": 4,
-    "createdAt": "2026-05-31T20:04:15.244Z"
+    "createdAt": "2026-06-01T19:52:06.629Z"
   },
   {
     "id": 1780205648248,
