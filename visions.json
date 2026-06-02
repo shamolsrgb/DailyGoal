@@ -233,6 +233,12 @@
         "comment": "Fix lots of bugs, CSV upload module, transaction showing issue, labels bug issue, duplicate and missing elements fixing issue. transaction can import successfully. now focus on next is bulk import from image or Statement",
         "pct": 10,
         "date": "2026-06-01"
+      },
+      {
+        "id": "mpx10wrd9nuq",
+        "comment": "working in statement to bulk upload. not fully complete but good progress.",
+        "pct": 10,
+        "date": "2026-06-02"
       }
     ]
   },
